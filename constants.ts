@@ -1,3 +1,4 @@
+// constants.ts v0.0.1
 // Models
 export const MODEL_THEORY_LOGIC = 'gemini-3-flash-preview';
 export const MODEL_CHAT_TUTOR = 'gemini-3-pro-preview';
@@ -13,7 +14,7 @@ export const OCTAVE_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A
 // Translations
 export const TRANSLATIONS = {
   en: {
-    appTitle: "MuseTheory AI",
+    appTitle: "MuseTheory AI v0.0.1",
     nav: {
       visualizer: "Visualizer",
       chat: "Tutor Chat",
@@ -50,7 +51,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. Powered by Google Gemini."
   },
   zh: {
-    appTitle: "MuseTheory AI",
+    appTitle: "MuseTheory AI v0.0.1",
     nav: {
       visualizer: "乐理可视化",
       chat: "AI 导师",

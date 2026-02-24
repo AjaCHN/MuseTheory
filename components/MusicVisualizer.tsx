@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { fetchMusicTheoryData } from '../services/geminiService';
+import { audioService, InstrumentType } from '../services/audioService';
 import { NoteData } from '../types';
 import Piano from './Piano';
-import { Loader2, Music, Search, Sparkles } from 'lucide-react';
+import { Loader2, Music, Search, Sparkles, Play, Settings2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const MusicVisualizer: React.FC = () => {
@@ -13,6 +14,7 @@ const MusicVisualizer: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<NoteData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [instrument, setInstrument] = useState<InstrumentType>('piano');
 
   const performSearch = async (searchQuery: string) => {
     if (!searchQuery.trim()) return;
@@ -35,6 +37,12 @@ const MusicVisualizer: React.FC = () => {
   const handleVisualize = (e: React.FormEvent) => {
     e.preventDefault();
     performSearch(query);
+  };
+
+  const handlePlayNotes = async () => {
+    if (data && data.notes) {
+      await audioService.playNotes(data.notes, instrument);
+    }
   };
 
   const handleLucky = () => {
@@ -118,6 +126,28 @@ const MusicVisualizer: React.FC = () => {
               <div className="bg-slate-50 px-3 py-1 rounded-lg border border-slate-200">
                 <span className="font-semibold text-slate-500 mr-2">{t.visualizer.intervals}:</span>
                 <span className="font-mono text-emerald-700">{data.intervals.join(' - ')}</span>
+              </div>
+              <div className="flex items-center gap-2 ml-auto">
+                <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200">
+                  <Settings2 className="w-4 h-4 text-slate-500" />
+                  <select 
+                    value={instrument} 
+                    onChange={(e) => setInstrument(e.target.value as InstrumentType)}
+                    className="bg-transparent text-sm font-medium text-slate-700 outline-none cursor-pointer"
+                  >
+                    <option value="piano">Piano</option>
+                    <option value="guitar">Guitar</option>
+                    <option value="violin">Violin</option>
+                  </select>
+                </div>
+                <button
+                  onClick={handlePlayNotes}
+                  className="flex items-center gap-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1 rounded-lg border border-indigo-200 transition-colors"
+                  title="Play Notes"
+                >
+                  <Play className="w-4 h-4" />
+                  <span className="font-semibold">Play</span>
+                </button>
               </div>
             </div>
           </div>
