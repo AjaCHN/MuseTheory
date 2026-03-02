@@ -1,15 +1,33 @@
-import './globals.css';
+// app/layout.tsx v0.0.2
+import './style.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Providers from '../components/Providers';
-import Navigation from '../components/Navigation';
-import Footer from '../components/Footer';
+import Providers from './components/Providers';
+import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'MuseTheory AI',
+  title: 'MuseTheory AI v0.0.2',
   description: 'An intelligent music theory companion that visualizes scales and chords, provides an AI tutor, and generates artistic musical imagery.',
+  keywords: ['music theory', 'AI', 'piano', 'scales', 'chords', 'visualizer', 'education', 'Gemini'],
+  openGraph: {
+    title: 'MuseTheory AI',
+    description: 'Visualize music theory with AI.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MuseTheory AI',
+    description: 'Visualize music theory with AI.',
+  },
+  other: {
+    'geo.region': 'US',
+    'geo.placename': 'Global',
+    'geo.position': '0;0',
+    'ICBM': '0, 0',
+  },
 };
 
 export default function RootLayout({

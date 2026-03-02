@@ -1,4 +1,6 @@
+/* app/style.css v0.0.2 */
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
   --foreground-rgb: 0, 0, 0;

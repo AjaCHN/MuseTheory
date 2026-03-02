@@ -1,3 +1,4 @@
+// next.config.mjs v0.0.2
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {

@@ -1,3 +1,4 @@
+// app/types.ts v0.0.2
 export interface NoteData {
   name: string;
   notes: string[];
@@ -26,4 +27,4 @@ export interface GeneratedImage {
   prompt: string;
 }
 
-export type Language = 'en' | 'zh';
+export type Language = 'en' | 'zh-CN' | 'zh-TW' | 'es' | 'ar' | 'fr' | 'pt-BR' | 'de' | 'ja' | 'ko' | 'ru';

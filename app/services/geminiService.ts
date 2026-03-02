@@ -1,3 +1,4 @@
+// app/services/geminiService.ts v0.0.2
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 import { MODEL_THEORY_LOGIC, MODEL_CHAT_TUTOR, MODEL_IMAGE_GEN } from "../constants";
 import { NoteData, ImageSize, Language } from "../types";

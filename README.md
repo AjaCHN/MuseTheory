@@ -1,20 +1,23 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# MuseTheory AI
 
-# Run and deploy your AI Studio app
+[中文文档](./README_CN.md)
 
-This contains everything you need to run your app locally.
+An intelligent music theory companion that visualizes scales and chords, provides an AI tutor, and generates artistic musical imagery.
 
-View your app in AI Studio: https://ai.studio/apps/d5fb1e69-4cd0-4141-b980-f0380c4fcfec
+## Features
 
-## Run Locally
+- **Music Visualizer**: Visualize scales and chords on a piano keyboard.
+- **AI Tutor Chat**: Ask questions about music theory, harmony, and composition.
+- **AI Art Generator**: Create stunning visuals of musical concepts using Gemini 3 Pro.
+- **Multi-language Support**: Supports 11 languages including English, Chinese, Spanish, Arabic, French, Portuguese, German, Japanese, Korean, and Russian.
 
-**Prerequisites:**  Node.js
+## Getting Started
 
+1.  Clone the repository.
+2.  Install dependencies: `npm install`
+3.  Set up environment variables (Gemini API Key).
+4.  Run the development server: `npm run dev`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## License
+
+MIT
