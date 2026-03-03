@@ -1,16 +1,25 @@
-// app/layout.tsx v0.0.2
+// app/layout.tsx v0.0.3
 import './style.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Providers from './components/Providers';
+import { ThemeProvider } from './components/ThemeProvider';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
+export const viewport: Viewport = {
+  themeColor: '#4f46e5',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: 'MuseTheory AI v0.0.2',
+  title: 'MuseTheory AI v0.0.3',
   description: 'An intelligent music theory companion that visualizes scales and chords, provides an AI tutor, and generates artistic musical imagery.',
+  manifest: '/manifest.json',
   keywords: ['music theory', 'AI', 'piano', 'scales', 'chords', 'visualizer', 'education', 'Gemini'],
   openGraph: {
     title: 'MuseTheory AI',
@@ -36,15 +45,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-slate-50 text-slate-900 min-h-screen flex flex-col`}>
-        <Providers>
-          <Navigation />
-          <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-            {children}
-          </main>
-          <Footer />
-        </Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 min-h-screen flex flex-col transition-colors duration-300`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Providers>
+            <Navigation />
+            <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+              {children}
+            </main>
+            <Footer />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

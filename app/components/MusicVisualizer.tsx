@@ -1,4 +1,4 @@
-// app/components/MusicVisualizer.tsx v0.0.2
+// app/components/MusicVisualizer.tsx v0.0.3
 'use client';
 
 import React, { useState } from 'react';
@@ -6,16 +6,23 @@ import { fetchMusicTheoryData } from '../services/geminiService';
 import { audioService, InstrumentType } from '../services/audioService';
 import { NoteData } from '../types';
 import Piano from './Piano';
-import { Loader2, Music, Search, Sparkles, Play, Settings2 } from 'lucide-react';
+import SheetMusic from './SheetMusic';
+import { Loader2, Music, Search, Sparkles, Play, Settings2, Mic, Square, Download } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useMusicStore } from '../store/useMusicStore';
+import { useWebMIDI } from '../hooks/useWebMIDI';
 
 const MusicVisualizer: React.FC = () => {
   const { t, language } = useLanguage();
+  const { instrument, setInstrument } = useMusicStore();
+  const { midiAccess, error: midiError } = useWebMIDI();
+  
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<NoteData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [instrument, setInstrument] = useState<InstrumentType>('piano');
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
 
   const performSearch = async (searchQuery: string) => {
     if (!searchQuery.trim()) return;
@@ -38,6 +45,18 @@ const MusicVisualizer: React.FC = () => {
   const handleVisualize = (e: React.FormEvent) => {
     e.preventDefault();
     performSearch(query);
+  };
+
+  const handleRecordToggle = async () => {
+    if (isRecording) {
+      const url = await audioService.stopRecording();
+      setRecordingUrl(url);
+      setIsRecording(false);
+    } else {
+      setRecordingUrl(null);
+      await audioService.startRecording();
+      setIsRecording(true);
+    }
   };
 
   const handlePlayNotes = async () => {
@@ -107,43 +126,80 @@ const MusicVisualizer: React.FC = () => {
       </form>
 
       {error && (
-        <div className="p-4 bg-red-50 text-red-700 rounded-xl text-center border border-red-100">
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-xl text-center border border-red-100 dark:border-red-800">
           {error}
+        </div>
+      )}
+
+      {midiError && (
+        <div className="p-2 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-lg text-sm text-center border border-amber-100 dark:border-amber-800">
+          {midiError}
+        </div>
+      )}
+
+      {midiAccess && (
+        <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-lg text-sm text-center border border-emerald-100 dark:border-emerald-800">
+          MIDI Keyboard Connected
         </div>
       )}
 
       {data && (
         <div className="space-y-8 animate-fade-in">
           {/* Info Card */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-            <h3 className="text-2xl font-bold text-indigo-900 mb-2">{data.name}</h3>
-            <p className="text-slate-600 mb-4">{data.description}</p>
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+            <h3 className="text-2xl font-bold text-indigo-900 dark:text-indigo-400 mb-2">{data.name}</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">{data.description}</p>
             
             <div className="flex flex-wrap gap-4 text-sm">
-              <div className="bg-slate-50 px-3 py-1 rounded-lg border border-slate-200">
-                <span className="font-semibold text-slate-500 mr-2">{t.visualizer.notes}:</span>
-                <span className="font-mono text-indigo-700">{data.notes.join(' - ')}</span>
+              <div className="bg-slate-50 dark:bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                <span className="font-semibold text-slate-500 dark:text-slate-400 mr-2">{t.visualizer.notes}:</span>
+                <span className="font-mono text-indigo-700 dark:text-indigo-400">{data.notes.join(' - ')}</span>
               </div>
-              <div className="bg-slate-50 px-3 py-1 rounded-lg border border-slate-200">
-                <span className="font-semibold text-slate-500 mr-2">{t.visualizer.intervals}:</span>
-                <span className="font-mono text-emerald-700">{data.intervals.join(' - ')}</span>
+              <div className="bg-slate-50 dark:bg-slate-900/50 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                <span className="font-semibold text-slate-500 dark:text-slate-400 mr-2">{t.visualizer.intervals}:</span>
+                <span className="font-mono text-emerald-700 dark:text-emerald-400">{data.intervals.join(' - ')}</span>
               </div>
               <div className="flex items-center gap-2 ml-auto">
-                <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-lg border border-slate-200">
-                  <Settings2 className="w-4 h-4 text-slate-500" />
+                <div className="flex items-center gap-1 bg-slate-50 dark:bg-slate-900/50 px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <Settings2 className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                   <select 
                     value={instrument} 
                     onChange={(e) => setInstrument(e.target.value as InstrumentType)}
-                    className="bg-transparent text-sm font-medium text-slate-700 outline-none cursor-pointer"
+                    className="bg-transparent text-sm font-medium text-slate-700 dark:text-slate-300 outline-none cursor-pointer"
                   >
                     <option value="piano">Piano</option>
                     <option value="guitar">Guitar</option>
                     <option value="violin">Violin</option>
                   </select>
                 </div>
+                
+                <button
+                  onClick={handleRecordToggle}
+                  className={`flex items-center gap-1 px-3 py-1 rounded-lg border transition-colors ${
+                    isRecording 
+                      ? 'bg-red-100 text-red-700 border-red-200 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800' 
+                      : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600'
+                  }`}
+                  title={isRecording ? "Stop Recording" : "Start Recording"}
+                >
+                  {isRecording ? <Square className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                  <span className="font-semibold hidden sm:inline">{isRecording ? "Stop" : "Record"}</span>
+                </button>
+
+                {recordingUrl && (
+                  <a
+                    href={recordingUrl}
+                    download="musetheory-recording.webm"
+                    className="flex items-center gap-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-200 transition-colors dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800"
+                    title="Download Recording"
+                  >
+                    <Download className="w-4 h-4" />
+                  </a>
+                )}
+
                 <button
                   onClick={handlePlayNotes}
-                  className="flex items-center gap-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1 rounded-lg border border-indigo-200 transition-colors"
+                  className="flex items-center gap-1 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1 rounded-lg border border-indigo-200 transition-colors dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800"
                   title="Play Notes"
                 >
                   <Play className="w-4 h-4" />
@@ -153,8 +209,14 @@ const MusicVisualizer: React.FC = () => {
             </div>
           </div>
 
+          {/* Sheet Music */}
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
+            <h4 className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-wider">Sheet Music</h4>
+            <SheetMusic notes={data.notes} title={data.name} />
+          </div>
+
           {/* Visualization */}
-          <div className="bg-white p-6 sm:p-10 rounded-2xl shadow-lg border border-slate-100 flex flex-col items-center">
+          <div className="bg-white dark:bg-slate-800 p-6 sm:p-10 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 flex flex-col items-center">
             <Piano highlightedNotes={data.notes} />
           </div>
         </div>

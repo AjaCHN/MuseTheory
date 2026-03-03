@@ -1,4 +1,4 @@
-// app/services/audioService.ts v0.0.2
+// app/services/audioService.ts v0.0.3
 import * as Tone from 'tone';
 
 export type InstrumentType = 'piano' | 'guitar' | 'violin';
@@ -10,10 +10,13 @@ class AudioService {
     violin: null,
   };
   private isInitialized = false;
+  private recorder: any = null;
 
   async init() {
     if (this.isInitialized) return;
     await Tone.start();
+    
+    this.recorder = new Tone.Recorder();
     
     // Simple synths for demonstration. In a real app, you'd use Sampler with actual audio files.
     this.synths.piano = new Tone.PolySynth(Tone.Synth, {
@@ -30,6 +33,8 @@ class AudioService {
       oscillator: { type: 'sawtooth' },
       envelope: { attack: 0.5, decay: 0.1, sustain: 1, release: 1 }
     }).toDestination();
+
+    Tone.getDestination().connect(this.recorder);
 
     this.isInitialized = true;
   }
@@ -55,6 +60,16 @@ class AudioService {
     
     // Play chord at the end
     synth.triggerAttackRelease(mappedNotes, duration, now + mappedNotes.length * 0.5 + 0.5);
+  }
+
+  async startRecording() {
+    await this.init();
+    await this.recorder.start();
+  }
+
+  async stopRecording(): Promise<string> {
+    const recording = await this.recorder.stop();
+    return URL.createObjectURL(recording);
   }
 }
 

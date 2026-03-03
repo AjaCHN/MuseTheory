@@ -1,5 +1,5 @@
-// app/services/geminiService.ts v0.0.2
-import { GoogleGenAI, Type, Chat } from "@google/genai";
+// app/services/geminiService.ts v0.0.3
+import { GoogleGenAI, Type, Chat, GenerateContentResponse } from "@google/genai";
 import { MODEL_THEORY_LOGIC, MODEL_CHAT_TUTOR, MODEL_IMAGE_GEN } from "../constants";
 import { NoteData, ImageSize, Language } from "../types";
 
@@ -64,22 +64,26 @@ export const fetchMusicTheoryData = async (query: string, language: Language = '
 // Chat instance management
 let chatSession: Chat | null = null;
 
-export const sendMessageToTutor = async (message: string, history: {role: string, parts: {text: string}[]}[] = []): Promise<string> => {
+export const sendMessageToTutorStream = async function*(message: string, history: {role: string, parts: {text: string}[]}[] = []): AsyncGenerator<string, void, unknown> {
   const ai = getAI();
   
-  // Re-initialize chat if it doesn't exist or we want to ensure fresh config
   if (!chatSession) {
     chatSession = ai.chats.create({
       model: MODEL_CHAT_TUTOR,
-      history: history, // Initialize with provided history if strictly needed, though single session is better
+      history: history,
       config: {
         systemInstruction: "You are an expert music theory professor. You are helpful, encouraging, and precise. Keep answers concise but informative.",
       }
     });
   }
 
-  const result = await chatSession.sendMessage({ message });
-  return result.text || "I couldn't generate a response.";
+  const resultStream = await chatSession.sendMessageStream({ message });
+  for await (const chunk of resultStream) {
+    const c = chunk as GenerateContentResponse;
+    if (c.text) {
+      yield c.text;
+    }
+  }
 };
 
 export const generateMusicImage = async (prompt: string, size: ImageSize): Promise<string> => {

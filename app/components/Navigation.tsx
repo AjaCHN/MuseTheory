@@ -1,16 +1,19 @@
-// app/components/Navigation.tsx v0.0.2
+// app/components/Navigation.tsx v0.0.3
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Music, MessageCircle, Image as ImageIcon, Languages, ChevronDown } from 'lucide-react';
+import { Music, MessageCircle, Image as ImageIcon, Languages, ChevronDown, Sun, Moon } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Language } from '../types';
+import { useTheme } from 'next-themes';
 
 export default function Navigation() {
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
 
@@ -29,6 +32,7 @@ export default function Navigation() {
   ];
 
   useEffect(() => {
+    setMounted(true);
     const handleClickOutside = (event: MouseEvent) => {
       if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
         setIsLangMenuOpen(false);
@@ -90,7 +94,17 @@ export default function Navigation() {
               <span className="hidden sm:inline">{t.nav.art}</span>
             </Link>
 
-            <div className="h-6 w-px bg-slate-200 mx-2 hidden sm:block"></div>
+            <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
+
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                title="Toggle Theme"
+              >
+                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+            )}
 
             <div className="relative" ref={langMenuRef}>
               <button

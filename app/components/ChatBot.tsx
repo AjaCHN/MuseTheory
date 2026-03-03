@@ -1,8 +1,8 @@
-// app/components/ChatBot.tsx v0.0.2
+// app/components/ChatBot.tsx v0.0.3
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { sendMessageToTutor } from '../services/geminiService';
+import { sendMessageToTutorStream } from '../services/geminiService';
 import { ChatMessage } from '../types';
 import { Send, User, Bot, Loader2, Trash2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -12,12 +12,15 @@ const ChatBot: React.FC = () => {
   const { t } = useLanguage();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   
-  // Initialize welcome message once or when language changes if we wanted dynamic welcome.
-  // For simplicity, we only add welcome message on mount if empty, 
-  // but to support language switching properly for the "Welcome" text we can render it conditionally or use an effect.
-  // Here we use an effect to populate initial message if empty.
   useEffect(() => {
-    if (messages.length === 0) {
+    const saved = localStorage.getItem('chatHistory');
+    if (saved) {
+      try {
+        setMessages(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse chat history", e);
+      }
+    } else if (messages.length === 0) {
       setMessages([
         { 
           id: 'welcome', 
@@ -29,6 +32,13 @@ const ChatBot: React.FC = () => {
     }
   }, []); 
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem('chatHistory', JSON.stringify(messages));
+    }
+    scrollToBottom();
+  }, [messages]);
+
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -36,10 +46,6 @@ const ChatBot: React.FC = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,38 +62,46 @@ const ChatBot: React.FC = () => {
     setInput('');
     setIsSending(true);
 
+    const botMsgId = (Date.now() + 1).toString();
+    setMessages(prev => [...prev, { id: botMsgId, role: 'model', text: '', timestamp: Date.now() }]);
+
     try {
-      const responseText = await sendMessageToTutor(userMsg.text);
-      const botMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'model',
-        text: responseText,
-        timestamp: Date.now()
-      };
-      setMessages(prev => [...prev, botMsg]);
+      // Map history to the format expected by Gemini (if we were passing it)
+      // For now, we just pass the new message
+      const stream = sendMessageToTutorStream(userMsg.text);
+      let fullText = '';
+      
+      for await (const chunk of stream) {
+        fullText += chunk;
+        setMessages(prev => 
+          prev.map(msg => 
+            msg.id === botMsgId ? { ...msg, text: fullText } : msg
+          )
+        );
+      }
     } catch (error) {
       console.error(error);
-      const errorMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'model',
-        text: "I apologize, but I encountered an error. Please try asking again.",
-        timestamp: Date.now()
-      };
-      setMessages(prev => [...prev, errorMsg]);
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === botMsgId ? { ...msg, text: "I apologize, but I encountered an error. Please try asking again." } : msg
+        )
+      );
     } finally {
       setIsSending(false);
     }
   };
 
   const handleClear = () => {
-    setMessages([
+    const defaultMsg: ChatMessage[] = [
       { 
         id: 'welcome', 
         role: 'model', 
         text: t.chat.welcome, 
         timestamp: Date.now() 
       }
-    ]);
+    ];
+    setMessages(defaultMsg);
+    localStorage.setItem('chatHistory', JSON.stringify(defaultMsg));
   };
 
   return (

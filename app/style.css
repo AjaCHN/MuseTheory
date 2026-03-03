@@ -1,6 +1,7 @@
-/* app/style.css v0.0.2 */
+/* app/style.css v0.0.3 */
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --foreground-rgb: 0, 0, 0;
