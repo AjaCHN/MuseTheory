@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MuseTheory AI - 交互原型设计 v0.0.5</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --secondary: #7c3aed;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --bg-light: #f8fafc;
+      --bg-dark: #0f172a;
+      --text-light: #1e293b;
+      --text-dark: #f1f5f9;
+      --border-light: #e2e8f0;
+      --border-dark: #334155;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg-light); color: var(--text-light); line-height: 1.6; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+    .prototype-header { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 3rem 2rem; border-radius: 16px; margin-bottom: 2rem; }
+    .prototype-header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .prototype-header .version { background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; }
+    h2 { font-size: 1.5rem; color: var(--text-light); margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-light); }
+    h3 { font-size: 1.125rem; color: var(--primary); margin: 1.5rem 0 0.75rem; }
+    h4 { font-size: 1rem; color: var(--text-light); margin: 1rem 0 0.5rem; font-weight: 600; }
+    .card { background: white; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid var(--border-light); }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+    .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .badge-primary { background: var(--primary); color: white; }
+    .badge-success { background: var(--success); color: white; }
+    .badge-warning { background: var(--warning); color: white; }
+    .badge-desktop { background: #8b5cf6; color: white; }
+    .badge-mobile { background: #06b6d4; color: white; }
+    .spec-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    .spec-table th, .spec-table td { border: 1px solid var(--border-light); padding: 0.75rem; text-align: left; font-size: 0.875rem; }
+    .spec-table th { background: #f1f5f9; font-weight: 600; }
+    .spec-table tr:hover { background: #f8fafc; }
+
+    /* Device Frames */
+    .device-frame { border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); margin: 1.5rem 0; }
+    .device-desktop { background: #1e293b; padding: 12px; border-radius: 16px; }
+    .device-desktop .screen { background: white; border-radius: 8px; overflow: hidden; }
+    .device-mobile { background: #1e293b; padding: 12px; border-radius: 24px; width: 280px; }
+    .device-mobile .screen { background: white; border-radius: 12px; overflow: hidden; height: 580px; }
+
+    /* Navigation Preview */
+    .nav-preview { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb; }
+    .nav-brand { display: flex; align-items: center; gap: 0.5rem; }
+    .nav-brand-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+    .nav-brand-text { font-weight: 700; font-size: 1.125rem; background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-link { padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: all 0.2s; display: flex; align-items: center; gap: 0.375rem; }
+    .nav-link.active { background: #eef2ff; color: var(--primary); }
+    .nav-link:not(.active) { color: #64748b; }
+    .nav-link:not(.active):hover { background: #f3f4f6; }
+    .nav-actions { display: flex; gap: 0.5rem; align-items: center; }
+    .nav-icon-btn { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #64748b; cursor: pointer; transition: all 0.2s; }
+    .nav-icon-btn:hover { background: #f3f4f6; color: var(--text-light); }
+
+    /* Mobile Navigation */
+    .mobile-nav { display: none; }
+    .mobile-nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e5e7eb; padding: 0.5rem; display: flex; justify-content: space-around; z-index: 100; }
+    .mobile-nav-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; padding: 0.5rem; border-radius: 8px; color: #94a3b8; font-size: 0.625rem; transition: all 0.2s; }
+    .mobile-nav-item.active { color: var(--primary); }
+    .mobile-nav-item svg { width: 24px; height: 24px; }
+
+    /* Search Component */
+    .search-box { display: flex; gap: 0.5rem; padding: 1rem; background: #f8fafc; border-radius: 12px; }
+    .search-input { flex: 1; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; outline: none; transition: border-color 0.2s; }
+    .search-input:focus { border-color: var(--primary); }
+    .search-btn { padding: 0.75rem 1.5rem; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .search-btn:hover { background: var(--primary-hover); }
+    .search-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .lucky-btn { padding: 0.75rem; background: var(--accent); color: white; border: none; border-radius: 10px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+    .lucky-btn:hover { background: #d97706; transform: scale(1.05); }
+
+    /* Piano Component */
+    .piano-container { padding: 1.5rem; background: #1e293b; border-radius: 12px; }
+    .piano-keys { display: flex; justify-content: center; position: relative; height: 120px; }
+    .white-key { width: 40px; height: 120px; background: linear-gradient(to bottom, #fefefe 0%, #f0f0f0 100%); border: 1px solid #d1d5db; border-radius: 0 0 6px 6px; cursor: pointer; transition: all 0.1s; }
+    .white-key:hover { background: linear-gradient(to bottom, #fff 0%, #e5e7eb 100%); }
+    .white-key:active { transform: translateY(2px); }
+    .white-key.highlighted { background: linear-gradient(to bottom, #fcd34d 0%, #f59e0b 100%); box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
+    .black-key { width: 28px; height: 75px; background: linear-gradient(to bottom, #374151 0%, #1f2937 100%); border-radius: 0 0 4px 4px; position: absolute; cursor: pointer; transition: all 0.1s; z-index: 2; }
+    .black-key:hover { background: linear-gradient(to bottom, #4b5563 0%, #374151 100%); }
+    .black-key.highlighted { background: linear-gradient(to bottom, #f59e0b 0%, #d97706 100%); box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); }
+
+    /* Chat Component */
+    .chat-container { display: flex; flex-direction: column; height: 100%; }
+    .chat-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+    .chat-title { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; color: #1e293b; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .chat-bubble { max-width: 85%; padding: 0.75rem 1rem; border-radius: 16px; line-height: 1.5; }
+    .chat-bubble.ai { background: #f1f5f9; color: #1e293b; border-bottom-left-radius: 4px; align-self: flex-start; }
+    .chat-bubble.user { background: var(--primary); color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
+    .chat-bubble.typing { display: flex; gap: 0.25rem; padding: 1rem; }
+    .chat-bubble.typing span { width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: typing 1.4s infinite; }
+    .chat-bubble.typing span:nth-child(2) { animation-delay: 0.2s; }
+    .chat-bubble.typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
+    .chat-input-area { padding: 1rem; border-top: 1px solid #e5e7eb; display: flex; gap: 0.5rem; }
+    .chat-input { flex: 1; padding: 0.75rem 1rem; border: 2px solid #e5e7eb; border-radius: 24px; outline: none; font-size: 1rem; transition: border-color 0.2s; }
+    .chat-input:focus { border-color: var(--primary); }
+    .chat-send-btn { width: 48px; height: 48px; background: var(--success); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .chat-send-btn:hover { background: #059669; transform: scale(1.05); }
+    .chat-send-btn:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; }
+
+    /* Art Generator Component */
+    .art-generator { padding: 1rem; }
+    .art-prompt-box { margin-bottom: 1rem; }
+    .art-prompt-label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #374151; }
+    .art-prompt-input { width: 100%; min-height: 100px; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1rem; resize: vertical; outline: none; transition: border-color 0.2s; font-family: inherit; }
+    .art-prompt-input:focus { border-color: var(--primary); }
+    .art-options { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .art-size-option { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .art-size-option input { display: none; }
+    .art-size-option .size-label { padding: 0.5rem 1rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.875rem; font-weight: 500; transition: all 0.2s; }
+    .art-size-option input:checked + .size-label { border-color: var(--primary); background: #eef2ff; color: var(--primary); }
+    .art-generate-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .art-generate-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3); }
+    .art-generate-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .art-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .art-image-card { background: #f8fafc; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
+    .art-image-placeholder { aspect-ratio: 1; background: linear-gradient(135deg, var(--secondary) 0%, #ec4899 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.875rem; }
+    .art-image-actions { padding: 0.75rem; display: flex; gap: 0.5rem; }
+    .art-download-btn { flex: 1; padding: 0.5rem; background: var(--success); color: white; border: none; border-radius: 8px; font-size: 0.875rem; cursor: pointer; transition: background 0.2s; }
+    .art-download-btn:hover { background: #059669; }
+
+    /* Info Card */
+    .info-card { background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid #e5e7eb; margin-bottom: 1rem; }
+    .info-card-title { font-size: 1.125rem; font-weight: 700; color: #1e293b; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+    .info-notes { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .info-note { padding: 0.375rem 0.75rem; background: #f1f5f9; border-radius: 6px; font-size: 0.875rem; font-weight: 500; }
+    .info-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .info-btn { padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.375rem; border: none; }
+    .info-btn-primary { background: var(--primary); color: white; }
+    .info-btn-primary:hover { background: var(--primary-hover); }
+    .info-btn-success { background: var(--success); color: white; }
+    .info-btn-success:hover { background: #059669; }
+    .info-btn-warning { background: var(--accent); color: white; }
+    .info-btn-warning:hover { background: #d97706; }
+    .info-btn-record { background: #ef4444; color: white; }
+    .info-btn-record.recording { animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+    /* Footer */
+    .footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.875rem; border-top: 1px solid #e5e7eb; margin-top: 2rem; }
+
+    /* Responsive Grid */
+    .responsive-grid { display: grid; gap: 1.5rem; }
+    @media (min-width: 768px) { .responsive-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .responsive-grid { grid-template-columns: 2fr 1fr; } }
+
+    /* Mobile First Styles */
+    @media (max-width: 640px) {
+      .container { padding: 1rem; }
+      .prototype-header { padding: 2rem 1rem; }
+      .prototype-header h1 { font-size: 1.5rem; }
+      .nav-links { display: none; }
+      .mobile-nav { display: block; }
+      .search-box { flex-direction: column; }
+      .search-btn, .lucky-btn { width: 100%; justify-content: center; }
+      .piano-keys { overflow-x: auto; justify-content: flex-start; padding: 0 1rem; }
+      .info-actions { flex-direction: column; }
+      .info-btn { width: 100%; justify-content: center; }
+    }
+
+    /* Design Suggestions */
+    .suggestion { background: #fefce8; border: 1px solid #fef08a; border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; }
+    .suggestion-title { font-weight: 600; color: #854d0e; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .suggestion-content { color: #713f12; font-size: 0.875rem; }
+    .suggestion-icon { color: #ca8a04; }
+
+    /* Color Palette */
+    .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; }
+    .color-swatch { text-align: center; }
+    .color-box { width: 100%; height: 60px; border-radius: 8px; margin-bottom: 0.5rem; }
+    .color-name { font-size: 0.75rem; font-weight: 600; color: #374151; }
+    .color-hex { font-size: 0.625rem; color: #6b7280; font-family: monospace; }
+
+    /* Breakpoint Guide */
+    .breakpoint-table { font-size: 0.875rem; }
+    .breakpoint-table td:first-child { font-family: monospace; background: #f1f5f9; }
+
+    /* Accessibility */
+    .a11y-checklist { display: grid; gap: 0.75rem; }
+    .a11y-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: white; border-radius: 8px; border: 1px solid #e5e7eb; }
+    .a11y-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .a11y-icon.pass { background: #dcfce7; color: #16a34a; }
+    .a11y-icon.warn { background: #fef9c3; color: #ca8a04; }
+    .a11y-text { font-size: 0.875rem; color: #374151; }
+
+    /* Flow Diagram */
+    .flow { display: flex; flex-direction: column; gap: 0.5rem; }
+    .flow-step { display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: white; border-radius: 8px; border: 1px solid #e5e7eb; }
+    .flow-number { width: 28px; height: 28px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem; flex-shrink: 0; }
+    .flow-content { flex: 1; }
+    .flow-arrow { text-align: center; color: #94a3b8; font-size: 1.25rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="prototype-header">
+      <h1>MuseTheory AI - 交互原型设计规范</h1>
+      <p style="opacity: 0.9; margin-top: 0.5rem;">智能音乐理论学习助手 - UI/UX 设计规范与原型文档</p>
+      <span class="version">v0.0.5</span>
+    </div>
+
+    <!-- 1. 设计原则 -->
+    <h2>1. 设计原则</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>🎯 简约直观</h3>
+        <p style="color: #64748b; font-size: 0.875rem;">界面元素少而精，用户无需学习即可上手。核心功能一步直达，减少操作层级。</p>
+      </div>
+      <div class="card">
+        <h3>🎨 一致性</h3>
+        <p style="color: #64748b; font-size: 0.875rem;">统一的视觉语言和交互模式，跨页面体验连贯。颜色、间距、圆角保持系统性。</p>
+      </div>
+      <div class="card">
+        <h3>⚡ 高效响应</h3>
+        <p style="color: #64748b; font-size: 0.875rem;">即时视觉反馈，操作流畅无等待。加载状态明确，错误提示友好。</p>
+      </div>
+      <div class="card">
+        <h3>♿ 无障碍</h3>
+        <p style="color: #64748b; font-size: 0.875rem;">支持键盘导航，色彩对比度符合 WCAG AA 标准，适配屏幕阅读器。</p>
+      </div>
+    </div>
+
+    <!-- 2. 设计系统 -->
+    <h2>2. 设计系统</h2>
+
+    <h3>2.1 色彩系统</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-box" style="background: #4f46e5;"></div>
+        <div class="color-name">Primary</div>
+        <div class="color-hex">#4f46e5</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #7c3aed;"></div>
+        <div class="color-name">Secondary</div>
+        <div class="color-hex">#7c3aed</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #f59e0b;"></div>
+        <div class="color-name">Accent</div>
+        <div class="color-hex">#f59e0b</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #10b981;"></div>
+        <div class="color-name">Success</div>
+        <div class="color-hex">#10b981</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #ef4444;"></div>
+        <div class="color-name">Error</div>
+        <div class="color-hex">#ef4444</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #06b6d4;"></div>
+        <div class="color-name">Info</div>
+        <div class="color-hex">#06b6d4</div>
+      </div>
+    </div>
+
+    <h3>2.2 圆角系统</h3>
+    <table class="spec-table">
+      <tr><th>元素</th><th>圆角值</th><th>用途</th></tr>
+      <tr><td>按钮、输入框</td><td>8px / 10px</td><td>小尺寸交互元素</td></tr>
+      <tr><td>卡片、面板</td><td>12px / 16px</td><td>内容容器</td></tr>
+      <tr><td>模态框、浮动层</td><td>16px / 24px</td><td>重要弹出元素</td></tr>
+      <tr><td>头像、徽章</td><td>50%</td><td>圆形元素</td></tr>
+    </table>
+
+    <h3>2.3 间距系统</h3>
+    <table class="spec-table">
+      <tr><th>名称</th><th>值</th><th>用途</th></tr>
+      <tr><td>xs</td><td>4px</td><td>紧凑元素间距</td></tr>
+      <tr><td>sm</td><td>8px</td><td>小间距</td></tr>
+      <tr><td>md</td><td>16px / 1rem</td><td>标准间距</td></tr>
+      <tr><td>lg</td><td>24px / 1.5rem</td><td>大间距</td></tr>
+      <tr><td>xl</td><td>32px / 2rem</td><td>区块间距</td></tr>
+      <tr><td>2xl</td><td>48px / 3rem</td><td>页面间距</td></tr>
+    </table>
+
+    <!-- 3. 响应式断点 -->
+    <h2>3. 响应式断点</h2>
+    <table class="spec-table breakpoint-table">
+      <tr><th>断点</th><th>宽度</th><th>设备</th><th>布局策略</th></tr>
+      <tr><td>sm</td><td>&lt; 640px</td><td>手机</td><td>单栏堆叠，底部导航</td></tr>
+      <tr><td>md</td><td>640px - 768px</td><td>大手机/小平板</td><td>双栏尝试，保持紧凑</td></tr>
+      <tr><td>lg</td><td>768px - 1024px</td><td>平板</td><td>双栏，侧边内容</td></tr>
+      <tr><td>xl</td><td>1024px - 1280px</td><td>桌面</td><td>三栏布局</td></tr>
+      <tr><td>2xl</td><td>&gt; 1280px</td><td>大桌面</td><td>最大宽度约束</td></tr>
+    </table>
+
+    <!-- 4. 组件原型 -->
+    <h2>4. 组件原型</h2>
+
+    <h3>4.1 导航栏 (Navigation)</h3>
+    <div class="card">
+      <h4>桌面端</h4>
+      <div class="device-desktop">
+        <div class="screen">
+          <div class="nav-preview">
+            <div class="nav-brand">
+              <div class="nav-brand-icon">♪</div>
+              <span class="nav-brand-text">MuseTheory AI</span>
+            </div>
+            <div class="nav-links">
+              <a href="/" class="nav-link active">♪ 可视化</a>
+              <a href="/chat" class="nav-link">💬 导师</a>
+              <a href="/art" class="nav-link">🎨 艺术</a>
+            </div>
+            <div class="nav-actions">
+              <div class="nav-icon-btn" title="切换主题">☀️</div>
+              <div class="nav-icon-btn" title="切换语言">🌐</div>
+            </div>
+          </div>
+          <div style="padding: 2rem; text-align: center; color: #94a3b8;">页面内容区域</div>
+        </div>
+      </div>
+      <h4 style="margin-top: 1.5rem;">移动端</h4>
+      <div style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div class="device-mobile">
+          <div class="screen">
+            <div class="nav-preview" style="padding: 0.75rem;">
+              <div class="nav-brand">
+                <div class="nav-brand-icon" style="width: 28px; height: 28px; font-size: 12px;">♪</div>
+                <span class="nav-brand-text" style="font-size: 1rem;">MuseTheory</span>
+              </div>
+              <div class="nav-icon-btn" style="width: 28px; height: 28px;">🌐</div>
+            </div>
+            <div style="padding: 1rem; text-align: center; color: #94a3b8; font-size: 0.75rem;">页面内容</div>
+            <div class="mobile-nav-bar">
+              <div class="mobile-nav-item active">
+                <span>♪</span>
+                <span>可视化</span>
+              </div>
+              <div class="mobile-nav-item">
+                <span>💬</span>
+                <span>导师</span>
+              </div>
+              <div class="mobile-nav-item">
+                <span>🎨</span>
+                <span>艺术</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="flex: 1;">
+          <p style="font-size: 0.875rem; color: #64748b; margin-bottom: 0.5rem;"><strong>移动端特点：</strong></p>
+          <ul style="font-size: 0.875rem; color: #64748b; padding-left: 1.25rem;">
+            <li>导航链接仅显示图标</li>
+            <li>Logo 缩短为 "MuseTheory"</li>
+            <li>底部固定导航栏</li>
+            <li>汉堡菜单可选（超过3个链接时）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>4.2 搜索组件 (VisualizerSearch)</h3>
+    <div class="card">
+      <div class="device-desktop">
+        <div class="screen">
+          <div style="padding: 2rem;">
+            <div class="search-box">
+              <input type="text" class="search-input" placeholder="输入音阶或和弦，如：C大调、G7和弦..." value="C Major Scale">
+              <button class="search-btn">可视化</button>
+              <button class="lucky-btn" title="手气不错">🎲</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>4.3 钢琴键盘 (Piano)</h3>
+    <div class="card">
+      <div class="piano-container">
+        <div class="piano-keys">
+          <div class="white-key"></div>
+          <div class="black-key" style="left: 28px;"></div>
+          <div class="white-key"></div>
+          <div class="black-key" style="left: 68px;"></div>
+          <div class="white-key"></div>
+          <div class="white-key"></div>
+          <div class="black-key" style="left: 148px;"></div>
+          <div class="white-key"></div>
+          <div class="black-key" style="left: 188px;"></div>
+          <div class="white-key"></div>
+          <div class="black-key" style="left: 228px;"></div>
+          <div class="white-key"></div>
+          <div class="white-key highlighted"></div>
+          <div class="black-key highlighted" style="left: 308px;"></div>
+          <div class="white-key highlighted"></div>
+          <div class="black-key" style="left: 348px;"></div>
+          <div class="white-key highlighted"></div>
+          <div class="white-key"></div>
+          <div class="black-key" style="left: 428px;"></div>
+          <div class="white-key"></div>
+          <div class="black-key" style="left: 468px;"></div>
+          <div class="white-key"></div>
+          <div class="black-key" style="left: 508px;"></div>
+          <div class="white-key"></div>
+        </div>
+      </div>
+      <p style="font-size: 0.875rem; color: #64748b; margin-top: 1rem; text-align: center;">高亮音符：C - E - G（C大调三和弦）</p>
+    </div>
+
+    <h3>4.4 聊天组件 (ChatBot)</h3>
+    <div class="card">
+      <div class="device-mobile">
+        <div class="screen">
+          <div class="chat-container">
+            <div class="chat-header">
+              <div class="chat-title">
+                <span>🤖</span>
+                <span style="font-size: 0.875rem;">AI 导师</span>
+              </div>
+              <button style="border: none; background: none; color: #94a3b8; cursor: pointer;">🗑️</button>
+            </div>
+            <div class="chat-messages">
+              <div class="chat-bubble ai">你好！我是你的 AI 音乐理论导师。有什么关于和声、对位或作曲的问题吗？</div>
+              <div class="chat-bubble user">什么是属七和弦？</div>
+              <div class="chat-bubble ai">属七和弦（V7）是由根音、大三度、纯五度和小七度组成的七和弦。例如 G7 和弦包含 G、B、D、F 四个音...</div>
+            </div>
+            <div class="chat-input-area">
+              <input type="text" class="chat-input" placeholder="询问关于乐理的问题...">
+              <button class="chat-send-btn">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top: 1rem;">
+        <h4>交互状态</h4>
+        <table class="spec-table">
+          <tr><th>状态</th><th>视觉表现</th></tr>
+          <tr><td>默认</td><td>输入框可编辑，发送按钮绿色</td></tr>
+          <tr><td>输入中</td><td>实时显示输入文字</td></tr>
+          <tr><td>发送中</td><td>显示"思考中..."动画，用户消息立即显示</td></tr>
+          <tr><td>收到回复</td><td>AI 回复逐字显示（流式）</td></tr>
+          <tr><td>错误</td><td>显示错误提示，允许重试</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <h3>4.5 AI 艺术生成器 (ImageGenerator)</h3>
+    <div class="card">
+      <div class="art-generator">
+        <div class="art-prompt-box">
+          <label class="art-prompt-label">描述你的音乐图像</label>
+          <textarea class="art-prompt-input" placeholder="星云中漂浮的三角钢琴，梦幻紫蓝色调...">星云中漂浮的三角钢琴</textarea>
+        </div>
+        <div class="art-options">
+          <label class="art-size-option">
+            <input type="radio" name="size" value="1k" checked>
+            <span class="size-label">1K</span>
+          </label>
+          <label class="art-size-option">
+            <input type="radio" name="size" value="2k">
+            <span class="size-label">2K</span>
+          </label>
+          <label class="art-size-option">
+            <input type="radio" name="size" value="4k">
+            <span class="size-label">4K</span>
+          </label>
+        </div>
+        <button class="art-generate-btn">✨ 生成艺术品</button>
+        <div class="art-results">
+          <div class="art-image-card">
+            <div class="art-image-placeholder">生成的艺术图片</div>
+            <div class="art-image-actions">
+              <button class="art-download-btn">⬇️ 下载</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>4.6 信息卡片 (VisualizerInfo)</h3>
+    <div class="card">
+      <div class="info-card">
+        <div class="info-card-title">🎵 C Major Scale</div>
+        <div class="info-notes">
+          <span class="info-note">C</span>
+          <span class="info-note">D</span>
+          <span class="info-note">E</span>
+          <span class="info-note">F</span>
+          <span class="info-note">G</span>
+          <span class="info-note">A</span>
+          <span class="info-note">B</span>
+        </div>
+        <div style="font-size: 0.875rem; color: #64748b; margin-bottom: 1rem;">音程: W - W - H - W - W - W - H</div>
+        <div class="info-actions">
+          <button class="info-btn info-btn-primary">▶️ 播放</button>
+          <button class="info-btn info-btn-success">🎤 录音</button>
+          <button class="info-btn info-btn-warning">📥 下载音频</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 页面结构 -->
+    <h2>5. 页面结构</h2>
+
+    <h3>5.1 首页 - 乐理可视化</h3>
+    <div class="responsive-grid">
+      <div class="card">
+        <h4>桌面端布局</h4>
+        <div style="background: #f8fafc; border-radius: 8px; padding: 1rem; font-size: 0.75rem; color: #64748b;">
+          <div style="text-align: center; font-weight: 600; margin-bottom: 0.5rem;">视觉层次</div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem;">
+            <div style="text-align: center; font-weight: 600;">标题 + 副标题</div>
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem;">
+            搜索框 + 快捷按钮
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem;">
+            钢琴键盘（居中，突出显示）
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem;">
+            五线谱展示
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem;">
+            播放/录音/下载 操作栏
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h4>移动端布局</h4>
+        <div style="background: #f8fafc; border-radius: 8px; padding: 1rem; font-size: 0.75rem; color: #64748b;">
+          <div style="text-align: center; font-weight: 600; margin-bottom: 0.5rem;">视觉层次</div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; text-align: center;">
+            标题（缩小）
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem;">
+            搜索框（全宽）
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">
+            钢琴（可横向滚动）
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; margin-bottom: 0.5rem;">
+            五线谱（缩小）
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 0.5rem; text-align: center;">
+            操作栏（垂直堆叠）
+          </div>
+          <div style="background: #1e293b; color: white; border-radius: 8px; padding: 0.5rem; text-align: center; margin-top: 0.5rem; font-size: 0.625rem;">
+            底部导航栏
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>5.2 聊天页面</h3>
+    <div class="card">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div>
+          <h4>桌面端</h4>
+          <p style="font-size: 0.875rem; color: #64748b;">居中卡片布局，最大宽度 48rem</p>
+          <ul style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem; padding-left: 1.25rem;">
+            <li>聊天区域占满高度</li>
+            <li>固定高度，滚动消息</li>
+            <li>输入框固定在底部</li>
+          </ul>
+        </div>
+        <div>
+          <h4>移动端</h4>
+          <p style="font-size: 0.875rem; color: #64748b;">全屏布局</p>
+          <ul style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem; padding-left: 1.25rem;">
+            <li>充分利用屏幕空间</li>
+            <li>底部导航替换为返回</li>
+            <li>键盘弹出时自动调整</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. 交互流程 -->
+    <h2>6. 交互流程</h2>
+
+    <h3>6.1 乐理可视化流程</h3>
+    <div class="flow">
+      <div class="flow-step">
+        <span class="flow-number">1</span>
+        <div class="flow-content">
+          <strong>输入查询</strong> - 用户在搜索框输入音阶或和弦名称
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-number">2</span>
+        <div class="flow-content">
+          <strong>点击可视化</strong> - 触发 AI 分析请求
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-number">3</span>
+        <div class="flow-content">
+          <strong>加载状态</strong> - 显示加载动画
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-number">4</span>
+        <div class="flow-content">
+          <strong>展示结果</strong> - 钢琴高亮、五线谱显示、操作按钮可用
+        </div>
+      </div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-step">
+        <span class="flow-number">5</span>
+        <div class="flow-content">
+          <strong>用户操作</strong> - 可播放、录音、下载
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. 无障碍设计 -->
+    <h2>7. 无障碍设计 (Accessibility)</h2>
+    <div class="a11y-checklist">
+      <div class="a11y-item">
+        <span class="a11y-icon pass">✓</span>
+        <span class="a11y-text"><strong>键盘导航</strong> - 所有交互元素可通过 Tab 键访问，Enter/Space 激活</span>
+      </div>
+      <div class="a11y-item">
+        <span class="a11y-icon pass">✓</span>
+        <span class="a11y-text"><strong>色彩对比度</strong> - 文本与背景对比度 ≥ 4.5:1（普通文本）、≥ 3:1（大文本）</span>
+      </div>
+      <div class="a11y-item">
+        <span class="a11y-icon pass">✓</span>
+        <span class="a11y-text"><strong>焦点指示</strong> - 当前聚焦元素有清晰的可见焦点环</span>
+      </div>
+      <div class="a11y-item">
+        <span class="a11y-icon pass">✓</span>
+        <span class="a11y-text"><strong>表单标签</strong> - 所有输入框有明确的标签或占位符提示</span>
+      </div>
+      <div class="a11y-item">
+        <span class="a11y-icon warn">!</span>
+        <span class="a11y-text"><strong>ARIA 标注</strong> - 建议为钢琴按键、加载状态添加 ARIA 标签</span>
+      </div>
+      <div class="a11y-item">
+        <span class="a11y-icon warn">!</span>
+        <span class="a11y-text"><strong>屏幕阅读器</strong> - 建议为动态内容区域添加 aria-live 标注</span>
+      </div>
+    </div>
+
+    <!-- 8. UI/UX 优化建议 -->
+    <h2>8. UI/UX 优化建议</h2>
+
+    <h3>8.1 当前实现问题</h3>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">💡</span>钢琴键盘横向滚动（移动端）</div>
+      <div class="suggestion-content">
+        <strong>问题：</strong>移动端钢琴键盘可能被裁剪，需要横向滚动才能看到全部按键。<br>
+        <strong>建议：</strong>默认显示一个八度，用户可通过左右滑动查看更多；或添加左右箭头按钮。
+      </div>
+    </div>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">💡</span>聊天输入框高度</div>
+      <div class="suggestion-content">
+        <strong>问题：</strong>移动端聊天输入框可能被键盘遮挡。<br>
+        <strong>建议：</strong>使用 `position: fixed` 定位输入区域，或监听键盘事件自动调整布局。
+      </div>
+    </div>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">💡</span>五线谱缩放</div>
+      <div class="suggestion-content">
+        <strong>问题：</strong>五线谱在窄屏幕上可能显示不完整。<br>
+        <strong>建议：</strong>添加缩放控制，或使用 `overflow-x: auto` 允许横向滚动。
+      </div>
+    </div>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">💡</span>深色模式过渡</div>
+      <div class="suggestion-content">
+        <strong>建议：</strong>主题切换时添加平滑过渡动画（如 `transition: background-color 0.3s`），提升用户体验。
+      </div>
+    </div>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">💡</span>加载状态反馈</div>
+      <div class="suggestion-content">
+        <strong>建议：</strong>AI 回复"思考中"状态可添加更丰富的动画（如打字机效果或音符跳动），让用户感知系统在响应。
+      </div>
+    </div>
+
+    <h3>8.2 功能增强建议</h3>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">🚀</span>收藏功能</div>
+      <div class="suggestion-content">
+        允许用户收藏常用的音阶/和弦，一键快速访问。
+      </div>
+    </div>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">🚀</span>历史记录</div>
+      <div class="suggestion-content">
+        记录用户的搜索历史和对话记录，支持快速回溯。
+      </div>
+    </div>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">🚀</span>分享功能</div>
+      <div class="suggestion-content">
+        生成音阶/和弦的分享链接或图片，方便用户分享学习成果。
+      </div>
+    </div>
+    <div class="suggestion">
+      <div class="suggestion-title"><span class="suggestion-icon">🚀</span>键盘快捷键</div>
+      <div class="suggestion-content">
+        为桌面用户添加快捷键支持（如 Ctrl+Enter 发送消息，Ctrl+L 随机音阶）。
+      </div>
+    </div>
+
+    <h3>8.3 移动端专属优化</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h4>手势支持</h4>
+        <ul style="font-size: 0.875rem; color: #64748b; padding-left: 1.25rem;">
+          <li>钢琴支持滑动手势切换八度</li>
+          <li>聊天列表支持下拉刷新</li>
+          <li>图片生成支持双指缩放预览</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>性能优化</h4>
+        <ul style="font-size: 0.875rem; color: #64748b; padding-left: 1.25rem;">
+          <li>图片懒加载</li>
+          <li>虚拟列表（长聊天记录）</li>
+          <li>音频预加载优化</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 9. 组件版本对应 -->
+    <h2>9. 组件版本对应</h2>
+    <table class="spec-table">
+      <tr><th>组件</th><th>路径</th><th>版本</th><th>状态</th></tr>
+      <tr><td>MusicVisualizer</td><td>app/components/MusicVisualizer.tsx</td><td>v0.0.4</td><td><span class="badge badge-success">稳定</span></td></tr>
+      <tr><td>ChatBot</td><td>app/components/ChatBot.tsx</td><td>v0.0.4</td><td><span class="badge badge-success">稳定</span></td></tr>
+      <tr><td>ImageGenerator</td><td>app/components/ImageGenerator.tsx</td><td>v0.0.4</td><td><span class="badge badge-success">稳定</span></td></tr>
+      <tr><td>Piano</td><td>app/components/Piano.tsx</td><td>v0.0.3</td><td><span class="badge badge-success">稳定</span></td></tr>
+      <tr><td>Navigation</td><td>app/components/Navigation.tsx</td><td>v0.0.3</td><td><span class="badge badge-success">稳定</span></td></tr>
+      <tr><td>SheetMusic</td><td>app/components/SheetMusic.tsx</td><td>v0.0.3</td><td><span class="badge badge-success">稳定</span></td></tr>
+      <tr><td>Footer</td><td>app/components/Footer.tsx</td><td>v0.0.2</td><td><span class="badge badge-warning">待优化</span></td></tr>
+    </table>
+
+    <!-- 10. 设计资源 -->
+    <h2>10. 设计资源</h2>
+    <table class="spec-table">
+      <tr><th>资源</th><th>链接/路径</th><th>说明</th></tr>
+      <tr><td>图标库</td><td>Lucide React</td><td>项目中使用的图标库</td></tr>
+      <tr><td>字体</td><td>Inter (Google Fonts)</td><td>应用主字体</td></tr>
+      <tr><td>颜色参考</td><td>Tailwind CSS 默认色板</td><td>基于 slate, indigo, emerald 等</td></tr>
+      <tr><td>规范文档</td><td>/openspec/SPEC.md</td><td>详细技术规范</td></tr>
+    </table>
+
+    <div class="footer">
+      <p>MuseTheory AI - 交互原型设计规范 v0.0.5</p>
+      <p style="margin-top: 0.5rem;">最后更新: 2026-06-07</p>
+    </div>
+  </div>
+</body>
+</html>

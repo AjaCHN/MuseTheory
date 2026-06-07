@@ -42,7 +42,7 @@
 │   │   ├── VisualizerInfo.tsx
 │   │   └── VisualizerSearch.tsx
 │   ├── contexts/
-│   │   └── LanguageContext.tsx    # 国际化上下文 (v0.0.2)
+│   │   └── LanguageContext.tsx   # 国际化上下文 (v0.0.2)
 │   ├── hooks/
 │   │   └── useWebMIDI.ts         # MIDI支持 (v0.0.3)
 │   ├── services/
@@ -50,30 +50,30 @@
 │   │   └── geminiService.ts      # Gemini API服务
 │   ├── store/
 │   │   └── useMusicStore.ts      # Zustand状态 (v0.0.3)
-│   ├── constants.ts              # 常量与翻译 (v0.0.2)
+│   ├── constants.ts              # 常量与翻译 (v0.0.5)
 │   ├── error.tsx                 # 错误边界
 │   ├── layout.tsx                # 根布局 (v0.0.5)
-│   ├── loading.tsx               # 加载状态
+│   ├── loading.tsx                # 加载状态
 │   ├── page.tsx                  # 首页 (v0.0.2)
-│   ├── style.css                # 全局样式
+│   ├── style.css                 # 全局样式
 │   └── types.ts                  # TypeScript类型 (v0.0.2)
+├── prototype/                    # 原型设计文档
+│   ├── prototype.html            # 完整交互原型
+│   └── README.md                 # 原型目录说明
 ├── openspec/                     # 项目规范文档
-│   └── prototype.html           # 产品原型图
+│   └── SPEC.md                   # 项目规范
 ├── public/
 │   └── manifest.json             # PWA清单
 ├── __tests__/                    # 测试文件
 │   └── loading.test.tsx
-├── package.json                  # 项目依赖 (版本: 0.0.2*)
+├── package.json                  # 项目依赖 (v0.0.5)
 ├── metadata.json                 # 项目元数据 (v0.0.5)
 ├── tsconfig.json
 ├── next.config.mjs
-├── tailwind.config.js           # 已移除(Tailwind v4使用@tailwindcss/postcss)
 ├── jest.config.mjs
 ├── jest.setup.js
 ├── .eslintrc.json
 └── CHANGELOG.md                  # 变更日志 (v0.0.5)
-
-* 注意: package.json中版本为0.0.2，与其他文档不一致，待统一
 ```
 
 ## 4. 页面路由
@@ -125,15 +125,11 @@
 
 | 文档 | 版本 | 状态 |
 |------|------|------|
-| CHANGELOG.md | v0.0.5 | 最新 |
-| metadata.json | v0.0.5 | 最新 |
-| layout.tsx (title) | v0.0.5 | 最新 |
-| appTitle (translations) | v0.0.1 | **过时** |
-| package.json | 0.0.2 | **过时** |
-
-### 7.1 版本修复清单
-- [ ] `package.json` 版本从 `0.0.2` 更新为 `0.0.5`
-- [ ] `constants.ts` 中所有 `appTitle` 从 `v0.0.1` 更新为 `v0.0.5`
+| CHANGELOG.md | v0.0.5 | ✅ 最新 |
+| metadata.json | v0.0.5 | ✅ 最新 |
+| layout.tsx | v0.0.5 | ✅ 最新 |
+| constants.ts (appTitle) | v0.0.5 | ✅ 最新 |
+| package.json | v0.0.5 | ✅ 最新 |
 
 ## 8. API模型配置
 
@@ -154,12 +150,31 @@
 ### 9.2 暗色模式
 使用 `next-themes` 实现，支持 system/light/dark 三种模式。
 
-## 10. 待办事项
+### 9.3 响应式断点
+| 断点 | 宽度 | 设备 |
+|------|------|------|
+| sm | < 640px | 手机 |
+| md | 640px - 768px | 大手机/小平板 |
+| lg | 768px - 1024px | 平板 |
+| xl | 1024px - 1280px | 桌面 |
+| 2xl | > 1280px | 大桌面 |
 
-- [x] 创建openspec/prototype.html
-- [x] 创建openspec/SPEC.md
-- [ ] 统一版本号 (package.json, constants.ts)
-- [ ] 考虑添加 .env.example 示例文件
+## 10. UI/UX 优化项
+
+详见 [原型设计文档](../prototype/prototype.html)
+
+### 10.1 待优化项
+- [ ] 钢琴键盘移动端横向滚动优化
+- [ ] 聊天输入框键盘遮挡处理
+- [ ] 五线谱缩放控制
+- [ ] 深色模式平滑过渡动画
+- [ ] 加载状态增强动画
+
+### 10.2 建议功能
+- [ ] 收藏常用音阶/和弦
+- [ ] 搜索历史记录
+- [ ] 分享功能
+- [ ] 键盘快捷键支持
 
 ## 11. 参考链接
 
