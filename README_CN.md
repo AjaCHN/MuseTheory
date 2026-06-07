@@ -1,23 +1,47 @@
 # MuseTheory AI
 
-[English Documentation](./README.md)
+[中文文档](./README.md)
 
-一个智能乐理伴侣，可视化音阶和和弦，提供 AI 导师，并生成艺术性的音乐图像。
+An intelligent music theory learning assistant that visualizes scales and chords, provides an AI tutor, and generates artistic musical imagery.
 
-## 功能
+## Features
 
-- **乐理可视化**: 在钢琴键盘上可视化音阶和和弦。
-- **AI 导师聊天**: 询问关于乐理、和声及作曲的问题。
-- **AI 艺术生成器**: 使用 Gemini 3 Pro 创作令人惊叹的音乐概念视觉效果。
-- **多语言支持**: 支持包括英语、中文、西班牙语、阿拉伯语、法语、葡萄牙语、德语、日语、韩语和俄语在内的 11 种语言。
+- **Music Visualizer**: Enter a scale or chord name to visualize it on a piano keyboard with sheet music display
+- **AI Tutor**: Ask music theory questions in natural language and get streaming answers with multi-turn conversation support
+- **AI Art Generator**: Create concept art from musical descriptions, supporting 1K/2K/4K resolutions
+- **Multi-language**: Supports 11 languages
 
-## 快速开始
+## Requirements
 
-1.  克隆仓库。
-2.  安装依赖：`npm install`
-3.  设置环境变量（Gemini API Key）。
-4.  运行开发服务器：`npm run dev`
+- Node.js 18+
+- Gemini API Key (for AI features)
 
-## 许可证
+## Quick Start
+
+1. Clone the repository: `git clone <repository-url>`
+2. Install dependencies: `npm install`
+3. Configure environment: Create `.env.local` file and add `GEMINI_API_KEY=your_api_key`
+4. Start development server: `npm run dev`
+5. Open http://localhost:3000 in your browser
+
+## Pages
+
+| Path | Feature |
+|------|---------|
+| `/` | Music Visualizer (Home) |
+| `/chat` | AI Tutor Chat |
+| `/art` | AI Art Generator |
+
+## Features
+
+- **Lucky**: Click the dice button to randomly view a scale or chord
+- **MIDI Keyboard**: Connect external MIDI keyboard devices
+- **Audio Recording**: Record and export your performance
+
+## Tech Stack
+
+Next.js · React · Tailwind CSS · Gemini AI
+
+## License
 
 MIT
