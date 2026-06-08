@@ -1,9 +1,9 @@
-# MuseTheory AI - 项目规范文档 v0.0.5
+# MuseTheory AI - 项目规范文档 v0.0.6
 
 ## 1. 项目概述
 
 **项目名称**: MuseTheory AI
-**版本**: v0.0.5
+**版本**: v0.0.6
 **描述**: 智能音乐理论伴侣，可视化音阶与和弦，提供AI导师和AI艺术生成功能。
 
 ## 2. 技术栈
@@ -28,13 +28,13 @@
 │   ├── chat/page.tsx             # AI导师聊天页面 (v0.0.2)
 │   ├── components/               # React组件
 │   │   ├── AIStudioKeySelector.tsx
-│   │   ├── ChatBot.tsx           # AI导师组件 (v0.0.4)
+│   │   ├── ChatBot.tsx           # AI导师组件 (v0.0.5)
 │   │   ├── ChatInput.tsx
 │   │   ├── ChatMessageList.tsx
-│   │   ├── Footer.tsx            # 页脚 (v0.0.2)
+│   │   ├── Footer.tsx            # 页脚 (v0.0.3)
 │   │   ├── ImageGenerator.tsx    # 图片生成器 (v0.0.4)
-│   │   ├── MusicVisualizer.tsx   # 主可视化组件 (v0.0.4)
-│   │   ├── Navigation.tsx        # 导航栏 (v0.0.3)
+│   │   ├── MusicVisualizer.tsx   # 主可视化组件 (v0.0.5)
+│   │   ├── Navigation.tsx         # 导航栏 (v0.0.4)
 │   │   ├── Piano.tsx             # 钢琴键盘 (v0.0.3)
 │   │   ├── Providers.tsx
 │   │   ├── SheetMusic.tsx        # 五线谱 (v0.0.3)
@@ -47,24 +47,25 @@
 │   │   └── useWebMIDI.ts         # MIDI支持 (v0.0.3)
 │   ├── services/
 │   │   ├── audioService.ts       # 音频服务
-│   │   └── geminiService.ts      # Gemini API服务
+│   │   └── geminiService.ts     # Gemini API服务
 │   ├── store/
 │   │   └── useMusicStore.ts      # Zustand状态 (v0.0.3)
 │   ├── constants.ts              # 常量与翻译 (v0.0.5)
-│   ├── error.tsx                 # 错误边界
-│   ├── layout.tsx                # 根布局 (v0.0.5)
-│   ├── loading.tsx                # 加载状态
-│   ├── page.tsx                  # 首页 (v0.0.2)
-│   ├── style.css                 # 全局样式
-│   └── types.ts                  # TypeScript类型 (v0.0.2)
-├── prototype/                    # 原型设计文档
-│   ├── prototype.html            # 完整交互原型
+│   ├── error.tsx                # 错误边界
+│   ├── layout.tsx               # 根布局 (v0.0.5)
+│   ├── loading.tsx               # 加载状态
+│   ├── page.tsx                 # 首页 (v0.0.2)
+│   ├── style.css                # 全局样式
+│   └── types.ts                 # TypeScript类型 (v0.0.2)
+├── prototype/                   # 原型设计文档
+│   ├── prototype.html            # 完整交互原型 (v0.0.6)
+│   ├── prototype_v0.0.5.html
 │   └── README.md                 # 原型目录说明
-├── openspec/                     # 项目规范文档
-│   └── SPEC.md                   # 项目规范
+├── openspec/                    # 项目规范文档
+│   └── SPEC.md                  # 项目规范 (v0.0.6)
 ├── public/
 │   └── manifest.json             # PWA清单
-├── __tests__/                    # 测试文件
+├── __tests__/                   # 测试文件
 │   └── loading.test.tsx
 ├── package.json                  # 项目依赖 (v0.0.5)
 ├── metadata.json                 # 项目元数据 (v0.0.5)
@@ -130,6 +131,8 @@
 | layout.tsx | v0.0.5 | ✅ 最新 |
 | constants.ts (appTitle) | v0.0.5 | ✅ 最新 |
 | package.json | v0.0.5 | ✅ 最新 |
+| prototype.html | v0.0.6 | ✅ 最新 |
+| SPEC.md | v0.0.6 | ✅ 最新 |
 
 ## 8. API模型配置
 
@@ -139,45 +142,99 @@
 | 聊天导师 | gemini-3-pro-preview | 最新 |
 | 图片生成 | gemini-3-pro-image-preview | 最新 |
 
-## 9. 设计规范
+## 9. 设计规范 (Apple 风格)
 
 ### 9.1 主题色
-- Primary: `#4f46e5` (Indigo-600)
-- Secondary: `#7c3aed` (Purple-600)
-- Accent: `#f59e0b` (Amber-500)
-- Success: `#10b981` (Emerald-500)
+| 颜色名称 | 色值 | 用途 |
+|----------|------|------|
+| Black | #1d1d1f | 主要文字、背景 |
+| Gray | #86868b | 次要文字 |
+| Light Gray | #f5f5f7 | 背景色 |
+| Blue | #0071e3 | 主按钮、链接 |
+| Green | #34c759 | 成功状态 |
+| Orange | #ff9500 | 强调色 |
+| Red | #ff3b30 | 错误状态 |
+| Purple | #bf5af2 | 艺术生成器 |
 
 ### 9.2 暗色模式
 使用 `next-themes` 实现，支持 system/light/dark 三种模式。
 
-### 9.3 响应式断点
+### 9.3 圆角系统
+| 元素 | 圆角值 |
+|------|--------|
+| 按钮、输入框 | 12px / 980px |
+| 卡片、面板 | 20px / 24px |
+| 模态框、浮动层 | 20px / 24px |
+| 头像、图标 | 12px |
+
+### 9.4 间距系统
+| 名称 | 值 |
+|------|------|
+| xs | 4px |
+| sm | 8px |
+| md | 16px |
+| lg | 24px |
+| xl | 32px |
+| 2xl | 48px |
+
+### 9.5 响应式断点
 | 断点 | 宽度 | 设备 |
 |------|------|------|
-| sm | < 640px | 手机 |
-| md | 640px - 768px | 大手机/小平板 |
-| lg | 768px - 1024px | 平板 |
-| xl | 1024px - 1280px | 桌面 |
-| 2xl | > 1280px | 大桌面 |
+| sm | < 640px | iPhone |
+| md | 640px - 768px | iPad Mini |
+| lg | 768px - 1024px | iPad |
+| xl | 1024px - 1280px | MacBook |
+| 2xl | > 1280px | iMac |
 
-## 10. UI/UX 优化项
+### 9.6 字体系统
+- 主字体: SF Pro Display, -apple-system, BlinkMacSystemFont
+- 字重: 400 (正文) / 500 (中等) / 600 (标题) / 700 (大标题)
+- 标题: 40-56px
+- 副标题: 21-28px
+- 正文: 15-17px
+- 行高: 1.5
+
+## 10. Apple 风格设计特点
+
+### 10.1 极简主义
+- 大量留白，元素少而精
+- 去除非必要视觉噪音
+- 聚焦核心功能
+
+### 10.2 毛玻璃效果
+- 导航栏: `backdrop-blur-xl`
+- 移动端底部导航: `backdrop-filter: saturate(180%) blur(20px)`
+
+### 10.3 动画过渡
+- 卡片悬停: `transform: translateY(-2px)` + 阴影增强
+- 主题切换: `transition-all duration-300`
+- 焦点状态: `box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2)`
+
+### 10.4 阴影系统
+- 卡片阴影: `0 2px 12px rgba(0, 0, 0, 0.08)`
+- 卡片悬停: `0 8px 30px rgba(0, 0, 0, 0.12)`
+- 下拉菜单: `0 20px 40px rgba(0, 0, 0, 0.15)`
+
+## 11. UI/UX 优化项
 
 详见 [原型设计文档](../prototype/prototype.html)
 
-### 10.1 待优化项
+### 11.1 待优化项
 - [ ] 钢琴键盘移动端横向滚动优化
 - [ ] 聊天输入框键盘遮挡处理
 - [ ] 五线谱缩放控制
 - [ ] 深色模式平滑过渡动画
 - [ ] 加载状态增强动画
 
-### 10.2 建议功能
+### 11.2 建议功能
 - [ ] 收藏常用音阶/和弦
 - [ ] 搜索历史记录
 - [ ] 分享功能
 - [ ] 键盘快捷键支持
 
-## 11. 参考链接
+## 12. 参考链接
 
+- [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
 - [Keep a Changelog](https://keepachangelog.com/)
 - [Semantic Versioning](https://semver.org/)
 - [Tailwind CSS](https://tailwindcss.com/)

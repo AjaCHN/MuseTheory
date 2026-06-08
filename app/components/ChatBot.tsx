@@ -1,4 +1,4 @@
-// app/components/ChatBot.tsx v0.0.4
+// app/components/ChatBot.tsx v0.0.5
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -70,15 +70,18 @@ const ChatBot: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto h-[600px] flex flex-col bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 overflow-hidden">
-      <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex justify-between items-center">
-        <h2 className="text-lg font-semibold flex items-center gap-2 text-indigo-900 dark:text-indigo-400">
-          <Bot className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+    <div className="max-w-2xl mx-auto h-[600px] flex flex-col bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-lg border border-slate-200/50 dark:border-slate-700/50 overflow-hidden transition-all duration-300">
+      {/* Header - Apple Style */}
+      <div className="p-4 border-b border-slate-200/50 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+        <h2 className="text-lg font-semibold flex items-center gap-3 text-slate-900 dark:text-white">
+          <div className="p-2 bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 rounded-xl">
+            <Bot className="w-5 h-5 text-white dark:text-slate-900" />
+          </div>
           {t.chat.title}
         </h2>
         <button
           onClick={handleClear}
-          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors flex items-center gap-1 text-sm"
+          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all duration-200 flex items-center gap-2 text-sm"
           title={t.chat.clear}
         >
           <Trash2 className="w-4 h-4" />
@@ -86,7 +89,10 @@ const ChatBot: React.FC = () => {
         </button>
       </div>
 
+      {/* Messages - Apple Style */}
       <ChatMessageList messages={messages} isSending={isSending} messagesEndRef={messagesEndRef} />
+      
+      {/* Input - Apple Style */}
       <ChatInput input={input} setInput={setInput} isSending={isSending} onSend={handleSend} />
     </div>
   );

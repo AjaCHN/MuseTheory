@@ -1,4 +1,4 @@
-// app/components/MusicVisualizer.tsx v0.0.4
+// app/components/MusicVisualizer.tsx v0.0.5
 'use client';
 
 import React, { useState } from 'react';
@@ -74,12 +74,20 @@ const MusicVisualizer: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">{t.visualizer.title}</h2>
-        <p className="text-slate-600 dark:text-slate-400">{t.visualizer.subtitle}</p>
-      </div>
+    <div className="max-w-5xl mx-auto space-y-12">
+      {/* Apple-style Hero Section */}
+      {!data && !loading && (
+        <div className="text-center space-y-6 py-12">
+          <h2 className="text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
+            {t.visualizer.title}
+          </h2>
+          <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+            {t.visualizer.subtitle}
+          </p>
+        </div>
+      )}
 
+      {/* Search Section - Apple Style */}
       <VisualizerSearch 
         query={query} 
         setQuery={setQuery} 
@@ -88,24 +96,26 @@ const MusicVisualizer: React.FC = () => {
         onLucky={handleLucky} 
       />
 
+      {/* Error Messages - Apple Style */}
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-xl text-center border border-red-100 dark:border-red-800">
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-2xl text-center border border-red-100 dark:border-red-800">
           {error}
         </div>
       )}
 
       {midiError && (
-        <div className="p-2 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-lg text-sm text-center border border-amber-100 dark:border-amber-800">
+        <div className="p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-xl text-sm text-center border border-amber-100 dark:border-amber-800">
           {midiError}
         </div>
       )}
 
       {midiAccess && (
-        <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-lg text-sm text-center border border-emerald-100 dark:border-emerald-800">
+        <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-xl text-sm text-center border border-emerald-100 dark:border-emerald-800">
           MIDI Keyboard Connected
         </div>
       )}
 
+      {/* Results Section - Apple Style Cards */}
       {data && (
         <div className="space-y-8 animate-fade-in">
           <VisualizerInfo 
@@ -118,12 +128,15 @@ const MusicVisualizer: React.FC = () => {
             onPlayNotes={handlePlayNotes} 
           />
 
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700">
-            <h4 className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-wider">Sheet Music</h4>
+          {/* Sheet Music Card */}
+          <div className="bg-white dark:bg-slate-800/80 backdrop-blur-sm p-8 rounded-3xl shadow-sm border border-slate-100/50 dark:border-slate-700/50 transition-all duration-300 hover:shadow-md">
+            <h3 className="text-sm font-semibold text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-wider">Sheet Music</h3>
             <SheetMusic notes={data.notes} title={data.name} />
           </div>
 
-          <div className="bg-white dark:bg-slate-800 p-6 sm:p-10 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 flex flex-col items-center">
+          {/* Piano Card */}
+          <div className="bg-gradient-to-b from-slate-900 to-black p-8 sm:p-12 rounded-3xl shadow-lg flex flex-col items-center">
+            <h3 className="text-sm font-semibold text-slate-400 mb-6 uppercase tracking-wider">Piano</h3>
             <Piano highlightedNotes={data.notes} />
           </div>
         </div>
