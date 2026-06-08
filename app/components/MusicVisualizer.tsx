@@ -1,4 +1,4 @@
-// app/components/MusicVisualizer.tsx v0.0.5
+// app/components/MusicVisualizer.tsx v0.0.7 - Apple Style
 'use client';
 
 import React, { useState } from 'react';
@@ -77,11 +77,11 @@ const MusicVisualizer: React.FC = () => {
     <div className="max-w-5xl mx-auto space-y-12">
       {/* Apple-style Hero Section */}
       {!data && !loading && (
-        <div className="text-center space-y-6 py-12">
-          <h2 className="text-5xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <div className="text-center space-y-8 py-16">
+          <h2 className="text-6xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-white">
             {t.visualizer.title}
           </h2>
-          <p className="text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+          <p className="text-2xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
             {t.visualizer.subtitle}
           </p>
         </div>
@@ -98,19 +98,19 @@ const MusicVisualizer: React.FC = () => {
 
       {/* Error Messages - Apple Style */}
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-2xl text-center border border-red-100 dark:border-red-800">
+        <div className="p-6 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-3xl text-center border border-red-100 dark:border-red-800">
           {error}
         </div>
       )}
 
       {midiError && (
-        <div className="p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-xl text-sm text-center border border-amber-100 dark:border-amber-800">
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-2xl text-sm text-center border border-amber-100 dark:border-amber-800">
           {midiError}
         </div>
       )}
 
       {midiAccess && (
-        <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-xl text-sm text-center border border-emerald-100 dark:border-emerald-800">
+        <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-2xl text-sm text-center border border-emerald-100 dark:border-emerald-800">
           MIDI Keyboard Connected
         </div>
       )}
@@ -129,7 +129,7 @@ const MusicVisualizer: React.FC = () => {
           />
 
           {/* Sheet Music Card */}
-          <div className="bg-white dark:bg-slate-800/80 backdrop-blur-sm p-8 rounded-3xl shadow-sm border border-slate-100/50 dark:border-slate-700/50 transition-all duration-300 hover:shadow-md">
+          <div className="bg-white dark:bg-slate-800/80 backdrop-blur-sm p-8 rounded-3xl shadow-sm border border-slate-100/50 dark:border-slate-700/50 transition-all duration-300 hover:shadow-md hover:translate-y-[-2px]">
             <h3 className="text-sm font-semibold text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-wider">Sheet Music</h3>
             <SheetMusic notes={data.notes} title={data.name} />
           </div>

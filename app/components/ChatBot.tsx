@@ -1,4 +1,4 @@
-// app/components/ChatBot.tsx v0.0.5
+// app/components/ChatBot.tsx v0.0.7 - Apple Style
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -27,7 +27,7 @@ const ChatBot: React.FC = () => {
     } else if (messages.length === 0) {
       setMessages([{ id: 'welcome', role: 'model', text: t.chat.welcome, timestamp: Date.now() }]);
     }
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -70,10 +70,10 @@ const ChatBot: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto h-[600px] flex flex-col bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl shadow-lg border border-slate-200/50 dark:border-slate-700/50 overflow-hidden transition-all duration-300">
+    <div className="chat-container">
       {/* Header - Apple Style */}
-      <div className="p-4 border-b border-slate-200/50 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
-        <h2 className="text-lg font-semibold flex items-center gap-3 text-slate-900 dark:text-white">
+      <div className="chat-header">
+        <h2 className="chat-title">
           <div className="p-2 bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 rounded-xl">
             <Bot className="w-5 h-5 text-white dark:text-slate-900" />
           </div>
