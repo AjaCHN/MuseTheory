@@ -1,4 +1,4 @@
-// app/components/ChatMessageList.tsx v0.0.5
+// app/components/ChatMessageList.tsx v0.0.7 - Apple Style
 'use client';
 
 import React from 'react';
@@ -17,7 +17,7 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({ messages, isSending, 
   const { t } = useLanguage();
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="chat-messages">
       {messages.map((msg) => (
         <div
           key={msg.id}
@@ -28,17 +28,13 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({ messages, isSending, 
             ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}
           `}>
             <div className={`
-              flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
-              ${msg.role === 'user' ? 'bg-indigo-600 text-white' : 'bg-emerald-600 text-white'}
+              flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center
+              ${msg.role === 'user' ? 'bg-gradient-to-br from-slate-900 to-slate-700' : 'bg-gradient-to-br from-slate-500 to-slate-700'}
+              text-white
             `}>
-              {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
+              {msg.role === 'user' ? <User size={18} /> : <Bot size={18} />}
             </div>
-            <div className={`
-              p-3 rounded-2xl text-sm leading-relaxed
-              ${msg.role === 'user' 
-                ? 'bg-indigo-600 text-white rounded-tr-sm' 
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-tl-sm'}
-            `}>
+            <div className={`chat-bubble ${msg.role === 'user' ? 'user' : 'ai'}`}>
               {msg.role === 'user' ? (
                 msg.text
               ) : (
@@ -53,12 +49,12 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({ messages, isSending, 
       {isSending && (
         <div className="flex justify-start">
            <div className="flex max-w-[80%] gap-3 flex-row">
-             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center">
-               <Bot size={16} />
+             <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-500 to-slate-700 text-white flex items-center justify-center">
+               <Bot size={18} />
              </div>
-             <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-2xl rounded-tl-sm flex items-center gap-2">
+             <div className="chat-bubble ai flex items-center gap-2">
                <Loader2 className="w-4 h-4 animate-spin text-slate-500" />
-               <span className="text-xs text-slate-500">{t.chat.thinking}</span>
+               <span className="text-sm text-slate-500">{t.chat.thinking}</span>
              </div>
            </div>
         </div>
