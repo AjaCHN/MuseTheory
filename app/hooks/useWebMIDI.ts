@@ -1,4 +1,4 @@
-// app/hooks/useWebMIDI.ts v0.0.3
+// app/hooks/useWebMIDI.ts v0.0.7
 import { useEffect, useState } from 'react';
 import { audioService } from '../services/audioService';
 import { useMusicStore } from '../store/useMusicStore';
@@ -65,7 +65,7 @@ export const useWebMIDI = () => {
         }
       }
     };
-  }, [instrument, midiAccess]);
+  }, [instrument]);
 
   return { midiAccess, error };
 };

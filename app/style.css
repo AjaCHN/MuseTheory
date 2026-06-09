@@ -379,3 +379,38 @@
     width: 100%;
   }
 }
+
+/* Apple Style Animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+/* Apple Style Piano Component */
+.piano-container {
+  padding: 32px;
+  background: linear-gradient(180deg, #1d1d1f 0%, #000000 100%);
+  border-radius: 24px;
+  overflow-x: auto;
+}
+
+/* Apple Style Info Card Buttons (consistent with design system) */
+.info-btn.primary:hover {
+  transform: scale(1.05);
+  background: var(--apple-blue);
+  filter: brightness(1.1);
+}
+
+.info-btn.success:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.info-btn.warning:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}

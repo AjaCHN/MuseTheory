@@ -1,8 +1,8 @@
 # MuseTheory AI
 
-[English Documentation](./README_EN.md)
-
 一款智能音乐理论学习助手，支持音阶和弦可视化、AI 导师问答和音乐概念艺术生成。
+
+An intelligent music theory learning assistant with scale/chord visualization, AI tutor Q&A, and music concept art generation.
 
 ## ✨ 功能特性
 

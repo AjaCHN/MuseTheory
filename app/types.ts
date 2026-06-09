@@ -1,4 +1,4 @@
-// app/types.ts v0.0.2
+// app/types.ts v0.0.7
 export interface NoteData {
   name: string;
   notes: string[];
