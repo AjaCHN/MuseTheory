@@ -1,22 +1,21 @@
 # Prototype Directory
 
-This directory contains all prototype design documents and wireframes for MuseTheory AI.
+本目录包含 MuseTheory AI 的原型设计文档和线框图。
 
 ## Files
 
 | File | Description | Version |
 |------|-------------|---------|
-| [prototype.html](prototype.html) | Complete interactive prototype with UI/UX specifications | v0.0.5 |
-| [prototype_v0.0.5.html](../openspec/prototype_v0.0.5.html) | Historical prototype version | v0.0.5 |
+| [prototype.html](prototype.html) | 完整的交互式原型与 UI/UX 规范 | v0.0.7 |
 
 ## Contents
 
-- **Design System**: Color palette, typography, spacing, border-radius
-- **Responsive Breakpoints**: Mobile, tablet, desktop specifications
-- **Component Library**: Navigation, Piano, Chat, Art Generator, etc.
-- **Interaction Flows**: User journey maps
-- **Accessibility**: WCAG AA compliance checklist
-- **UI/UX Suggestions**: Optimization recommendations
+- **Design System**: Apple 风格色彩系统、排版、间距、圆角
+- **Responsive Breakpoints**: Mobile, Tablet, Desktop 规格
+- **Component Library**: Navigation, Piano, Chat, Art Generator, Info Cards, Search
+- **Interaction Flows**: 用户旅程地图
+- **Animation**: 过渡动画、悬停效果、缩放效果
+- **UI/UX Optimization**: 移动端优化、深色模式
 
 ## Quick Links
 

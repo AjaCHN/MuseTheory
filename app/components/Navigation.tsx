@@ -1,4 +1,4 @@
-// app/components/Navigation.tsx v0.0.4
+// app/components/Navigation.tsx v0.0.7
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';

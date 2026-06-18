@@ -1,4 +1,4 @@
-// app/components/Providers.tsx v0.0.2
+// app/components/Providers.tsx v0.0.7
 'use client';
 
 import React from 'react';

@@ -1,4 +1,4 @@
-// app/error.tsx v0.0.3
+// app/error.tsx v0.0.7
 'use client';
 
 import { useEffect } from 'react';
@@ -16,11 +16,11 @@ export default function Error({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-4">
-      <h2 className="text-2xl font-bold text-red-600 dark:text-red-400">Something went wrong!</h2>
+      <h2 className="text-2xl font-bold text-[#FF3B30] dark:text-[#FF453A]">Something went wrong!</h2>
       <p className="text-slate-600 dark:text-slate-400">We encountered an unexpected error.</p>
       <button
         onClick={() => reset()}
-        className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+        className="info-btn primary w-40"
       >
         Try again
       </button>

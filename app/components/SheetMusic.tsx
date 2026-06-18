@@ -1,4 +1,4 @@
-// app/components/SheetMusic.tsx v0.0.3
+// app/components/SheetMusic.tsx v0.0.7
 'use client';
 
 import React, { useEffect, useRef } from 'react';

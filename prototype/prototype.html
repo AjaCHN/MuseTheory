@@ -3,115 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MuseTheory AI - 完整设计系统原型 v0.0.7</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>MuseTheory AI - 交互原型设计 v0.0.7</title>
   <style>
-    /* ========================================
-       1. CSS 变量定义 - 色彩系统
-       ======================================== */
     :root {
-      /* Primary Colors */
-      --apple-blue: #0071e3;
-      --apple-blue-hover: #0077ed;
-      --apple-blue-pressed: #005bb5;
-      --apple-blue-muted: rgba(0, 113, 227, 0.12);
-
-      /* Semantic Colors */
-      --apple-green: #34c759;
-      --apple-green-dark: #30d158;
-      --apple-orange: #ff9500;
-      --apple-orange-dark: #ff9f0a;
-      --apple-red: #ff3b30;
-      --apple-red-dark: #ff453a;
-      --apple-indigo: #5e5ce6;
-      --apple-indigo-dark: #6e6cf7;
-      --apple-yellow: #ffcc00;
-      --apple-purple: #bf5af2;
-
-      /* Neutral Colors */
       --apple-black: #1d1d1f;
       --apple-gray: #86868b;
       --apple-light-gray: #f5f5f7;
-      --apple-border: #d2d2d7;
-
-      /* Semantic Tokens (shadcn pattern) */
-      --background: #ffffff;
-      --foreground: #1d1d1f;
-      --card: #ffffff;
-      --card-foreground: #1d1d1f;
-      --popover: #ffffff;
-      --popover-foreground: #1d1d1f;
+      --apple-blue: #0071e3;
+      --apple-blue-hover: #0077ed;
+      --apple-green: #34c759;
+      --apple-orange: #ff9500;
+      --apple-purple: #bf5af2;
+      --apple-red: #ff3b30;
+      --apple-yellow: #ffcc00;
+      --apple-indigo: #5e5ce6;
+      
       --primary: var(--apple-blue);
-      --primary-foreground: #ffffff;
-      --secondary: #f5f5f7;
-      --secondary-foreground: #1d1d1f;
-      --muted: #f5f5f7;
-      --muted-foreground: #86868b;
-      --accent: #f5f5f7;
-      --accent-foreground: #1d1d1f;
-      --destructive: var(--apple-red);
-      --destructive-foreground: #ffffff;
-      --border: #d2d2d7;
-      --input: #d2d2d7;
-      --ring: #0071e3;
-
-      /* Radius */
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 20px;
-      --radius-2xl: 24px;
-      --radius-3xl: 32px;
-      --radius-full: 9999px;
-
-      /* Shadows */
-      --shadow-subtle: 0 2px 16px rgba(0, 0, 0, 0.06);
-      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.12);
-      --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.12);
-      --shadow-modal: 0 24px 64px rgba(0, 0, 0, 0.24);
-
-      /* Timing */
-      --duration-fast: 150ms;
-      --duration-default: 300ms;
-      --duration-slow: 500ms;
-      --ease-default: cubic-bezier(0.25, 0.1, 0.25, 1);
-      --ease-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --primary-hover: var(--apple-blue-hover);
+      --bg-light: #ffffff;
+      --text-light: var(--apple-black);
+      --border-light: #d2d2d7;
     }
 
-    /* ========================================
-       2. 基础样式重置
-       ======================================== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
       background: var(--apple-light-gray);
-      color: var(--foreground);
+      color: var(--text-light);
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-    /* ========================================
-       3. 字体系统
-       ======================================== */
-    .text-display { font-size: 72px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
-    .text-h1 { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
-    .text-h2 { font-size: 36px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
-    .text-h3 { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
-    .text-h4 { font-size: 22px; font-weight: 700; line-height: 1.3; }
-    .text-body-lg { font-size: 17px; line-height: 1.5; }
-    .text-body { font-size: 15px; line-height: 1.5; }
-    .text-body-sm { font-size: 14px; line-height: 1.5; }
-    .text-caption { font-size: 13px; font-weight: 500; line-height: 1.4; }
-    .text-overline { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
-
-    /* ========================================
-       4. Hero Section
-       ======================================== */
+    /* Apple-style Hero Section */
     .hero {
       background: linear-gradient(180deg, #000000 0%, #1d1d1f 50%, #000000 100%);
       color: white;
@@ -152,103 +80,70 @@
       margin-bottom: 32px;
     }
 
-    /* ========================================
-       5. 按钮系统
-       ======================================== */
-    .btn {
+    .hero .cta-btn {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 8px;
-      padding: 12px 24px;
-      border-radius: var(--radius-lg);
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--duration-default) var(--ease-default);
-      border: none;
+      padding: 14px 32px;
+      background: var(--apple-blue);
+      color: white;
+      border-radius: 980px;
+      font-size: 17px;
+      font-weight: 500;
       text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
     }
 
-    .btn:hover { transform: scale(1.05); }
-    .btn:active { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-    .btn-primary { background: var(--apple-blue); color: white; }
-    .btn-primary:hover { background: var(--apple-blue-hover); }
-
-    .btn-secondary { background: var(--secondary); color: var(--foreground); }
-    .btn-secondary:hover { background: #e8e8ed; }
-
-    .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--foreground); }
-    .btn-outline:hover { background: var(--accent); }
-
-    .btn-ghost { background: transparent; color: var(--foreground); }
-    .btn-ghost:hover { background: var(--accent); }
-
-    .btn-destructive { background: var(--apple-red); color: white; }
-    .btn-destructive:hover { background: #e02a24; }
-
-    .btn-success { background: var(--apple-green); color: white; }
-    .btn-success:hover { background: #2bb850; }
-
-    .btn-warning { background: var(--apple-orange); color: white; }
-    .btn-warning:hover { background: #ff9d00; }
-
-    .btn-sm { padding: 8px 16px; font-size: 14px; }
-    .btn-lg { padding: 16px 32px; font-size: 17px; }
-    .btn-icon { width: 44px; height: 44px; padding: 0; border-radius: var(--radius-md); }
-
-    /* ========================================
-       6. 输入框系统
-       ======================================== */
-    .input {
-      width: 100%;
-      padding: 14px 20px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-lg);
-      font-size: 15px;
-      background: var(--muted);
-      color: var(--foreground);
-      outline: none;
-      transition: all var(--duration-default) var(--ease-default);
+    .hero .cta-btn:hover {
+      background: var(--apple-blue-hover);
+      transform: scale(1.05);
     }
 
-    .input:focus {
-      border-color: var(--apple-blue);
-      box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
-      background: white;
+    .hero .version-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 980px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 24px;
+      backdrop-filter: blur(10px);
     }
 
-    .input.error {
-      border-color: var(--apple-red);
-      box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.15);
+    h2 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 80px 0 16px;
+      text-align: center;
     }
 
-    .input:disabled { opacity: 0.5; cursor: not-allowed; }
+    h3 {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 48px 0 24px;
+    }
 
-    /* ========================================
-       7. 卡片系统
-       ======================================== */
+    p { color: var(--apple-gray); }
+
+    /* Apple-style Card */
     .card {
-      background: var(--card);
-      border-radius: var(--radius-2xl);
+      background: var(--bg-light);
+      border-radius: 24px;
       padding: 40px;
-      box-shadow: var(--shadow-subtle);
-      border: 1px solid rgba(0, 0, 0, 0.04);
-      transition: all var(--duration-slow) var(--ease-bounce);
+      margin-bottom: 24px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.04);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-card);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
     }
-
-    .card-header { margin-bottom: 24px; }
-    .card-title { font-size: 22px; font-weight: 700; color: var(--foreground); margin-bottom: 8px; }
-    .card-description { font-size: 15px; color: var(--muted-foreground); }
-    .card-content { margin-bottom: 24px; }
-    .card-footer { display: flex; gap: 12px; }
 
     .card-grid {
       display: grid;
@@ -257,38 +152,178 @@
       margin-top: 40px;
     }
 
-    .card-grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+    .feature-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
     }
 
-    /* ========================================
-       8. Badge / 徽章系统
-       ======================================== */
-    .badge {
-      display: inline-flex;
+    .feature-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+    }
+
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      display: flex;
       align-items: center;
-      padding: 4px 12px;
-      border-radius: var(--radius-full);
-      font-size: 12px;
-      font-weight: 600;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 36px;
     }
 
-    .badge-default { background: var(--primary); color: white; }
-    .badge-secondary { background: var(--secondary); color: var(--foreground); }
-    .badge-outline { border: 1px solid var(--border); color: var(--foreground); }
-    .badge-success { background: var(--apple-green); color: white; }
-    .badge-warning { background: var(--apple-orange); color: white; }
-    .badge-destructive { background: var(--apple-red); color: white; }
+    .feature-icon.blue { background: linear-gradient(135deg, #0071e3, #0077ed); color: white; }
+    .feature-icon.purple { background: linear-gradient(135deg, #5e5ce6, #bf5af2); color: white; }
+    .feature-icon.orange { background: linear-gradient(135deg, #ff9500, #ffcc00); color: white; }
 
-    /* ========================================
-       9. 钢琴键盘组件
-       ======================================== */
+    .feature-card h4 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--apple-black);
+    }
+
+    /* Apple-style Navigation */
+    .nav-preview {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--apple-black) 0%, #434344 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    .nav-brand-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--apple-black);
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-link {
+      padding: 8px 16px;
+      border-radius: 980px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      color: var(--apple-gray);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-link.active {
+      background: var(--apple-black);
+      color: white;
+    }
+
+    .nav-link:hover:not(.active) {
+      background: rgba(0,0,0,0.05);
+      color: var(--apple-black);
+    }
+
+    /* Apple-style Search */
+    .search-container {
+      display: flex;
+      gap: 12px;
+      padding: 24px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 16px 20px;
+      border: 2px solid #e5e5e7;
+      border-radius: 16px;
+      font-size: 17px;
+      background: #f5f5f7;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 4px rgba(0,113,227,0.15);
+      background: white;
+    }
+
+    .search-btn {
+      padding: 16px 32px;
+      background: var(--apple-blue);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+      background: var(--apple-blue-hover);
+      transform: scale(1.05);
+    }
+
+    .lucky-btn {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--apple-orange), #ffcc00);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-size: 24px;
+    }
+
+    .lucky-btn:hover {
+      transform: scale(1.1) rotate(15deg);
+    }
+
+    /* Apple-style Piano */
     .piano-container {
       padding: 48px;
       background: linear-gradient(180deg, #1d1d1f 0%, #000000 100%);
-      border-radius: var(--radius-3xl);
+      border-radius: 32px;
       overflow-x: auto;
     }
 
@@ -316,7 +351,7 @@
 
     .white-key.highlighted {
       background: linear-gradient(180deg, #fff7e6 0%, #ffe0b3 50%, #ffcc80 100%);
-      box-shadow: 0 0 40px rgba(255, 149, 0, 0.6), inset 0 -12px 24px rgba(255, 149, 0, 0.3);
+      box-shadow: 0 0 40px rgba(255,149,0,0.6), inset 0 -12px 24px rgba(255,149,0,0.3);
     }
 
     .black-key {
@@ -328,7 +363,7 @@
       cursor: pointer;
       transition: all 0.15s ease;
       z-index: 2;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.5);
     }
 
     .black-key:hover { background: linear-gradient(180deg, #404042 0%, #2a2a2c 100%); }
@@ -336,25 +371,23 @@
 
     .black-key.highlighted {
       background: linear-gradient(180deg, #ff9d00 0%, #ff6b00 100%);
-      box-shadow: 0 6px 24px rgba(255, 149, 0, 0.7);
+      box-shadow: 0 6px 24px rgba(255,149,0,0.7);
     }
 
-    /* ========================================
-       10. 聊天组件
-       ======================================== */
+    /* Apple-style Chat */
     .chat-container {
       display: flex;
       flex-direction: column;
-      height: 500px;
-      border-radius: var(--radius-3xl);
+      height: 600px;
+      border-radius: 32px;
       overflow: hidden;
       background: white;
-      box-shadow: var(--shadow-subtle);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.08);
     }
 
     .chat-header {
       padding: 20px 24px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -403,7 +436,7 @@
 
     .chat-input-area {
       padding: 16px 24px;
-      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      border-top: 1px solid rgba(0,0,0,0.06);
       display: flex;
       gap: 12px;
       align-items: center;
@@ -416,13 +449,13 @@
       border-radius: 24px;
       font-size: 15px;
       outline: none;
-      transition: all var(--duration-default) var(--ease-default);
+      transition: all 0.3s ease;
       background: #f5f5f7;
     }
 
     .chat-input:focus {
       border-color: var(--apple-blue);
-      box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+      box-shadow: 0 0 0 4px rgba(0,113,227,0.15);
       background: white;
     }
 
@@ -437,81 +470,20 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all var(--duration-default) var(--ease-default);
+      transition: all 0.3s ease;
     }
 
-    .chat-send-btn:hover { background: var(--apple-blue-hover); transform: scale(1.1); }
-
-    /* ========================================
-       11. 搜索组件
-       ======================================== */
-    .search-container {
-      display: flex;
-      gap: 12px;
-      padding: 24px;
-      background: white;
-      border-radius: var(--radius-2xl);
-      box-shadow: var(--shadow-subtle);
-      max-width: 700px;
-      margin: 0 auto;
+    .chat-send-btn:hover {
+      background: var(--apple-blue-hover);
+      transform: scale(1.1);
     }
 
-    .search-input {
-      flex: 1;
-      padding: 16px 20px;
-      border: 2px solid #e5e5e7;
-      border-radius: var(--radius-lg);
-      font-size: 17px;
-      background: #f5f5f7;
-      outline: none;
-      transition: all var(--duration-default) var(--ease-default);
-    }
-
-    .search-input:focus {
-      border-color: var(--apple-blue);
-      box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
-      background: white;
-    }
-
-    .search-btn {
-      padding: 16px 32px;
-      background: var(--apple-blue);
-      color: white;
-      border: none;
-      border-radius: var(--radius-lg);
-      font-size: 17px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--duration-default) var(--ease-default);
-    }
-
-    .search-btn:hover { background: var(--apple-blue-hover); transform: scale(1.05); }
-
-    .lucky-btn {
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, var(--apple-orange), #ffcc00);
-      color: white;
-      border: none;
-      border-radius: var(--radius-lg);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all var(--duration-default) var(--ease-bounce);
-      font-size: 24px;
-    }
-
-    .lucky-btn:hover { transform: scale(1.1) rotate(15deg); }
-
-    /* ========================================
-       12. 信息卡片组件
-       ======================================== */
+    /* Apple-style Info Card */
     .info-card {
       background: white;
-      border-radius: var(--radius-2xl);
+      border-radius: 24px;
       padding: 40px;
-      box-shadow: var(--shadow-subtle);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
     }
 
     .info-card-title {
@@ -532,7 +504,7 @@
     .info-note {
       padding: 10px 18px;
       background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
-      border-radius: var(--radius-md);
+      border-radius: 12px;
       font-size: 15px;
       font-weight: 600;
     }
@@ -547,11 +519,11 @@
       flex: 1;
       min-width: 120px;
       padding: 14px 24px;
-      border-radius: var(--radius-lg);
+      border-radius: 16px;
       font-size: 15px;
       font-weight: 600;
       cursor: pointer;
-      transition: all var(--duration-default) var(--ease-default);
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -559,121 +531,52 @@
       border: none;
     }
 
-    .info-btn.primary { background: var(--apple-blue); color: white; }
-    .info-btn.primary:hover { background: var(--apple-blue-hover); transform: scale(1.05); }
-
-    .info-btn.success { background: var(--apple-green); color: white; }
-    .info-btn.success:hover { background: #2bb850; transform: scale(1.05); }
-
-    .info-btn.warning { background: var(--apple-orange); color: white; }
-    .info-btn.warning:hover { background: #ff9d00; transform: scale(1.05); }
-
-    /* ========================================
-       13. 导航组件
-       ======================================== */
-    .nav-preview {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 24px;
-      border-radius: var(--radius-lg);
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 0, 0, 0.06);
-    }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .nav-brand-icon {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, var(--apple-black) 0%, #434344 100%);
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .info-btn.primary {
+      background: var(--apple-blue);
       color: white;
-      font-size: 20px;
+    }
+    .info-btn.primary:hover {
+      background: var(--apple-blue-hover);
+      transform: scale(1.05);
     }
 
-    .nav-brand-text {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--apple-black);
-      letter-spacing: -0.01em;
+    .info-btn.success {
+      background: var(--apple-green);
+      color: white;
+    }
+    .info-btn.success:hover {
+      background: #2bb850;
+      transform: scale(1.05);
     }
 
-    .nav-links { display: flex; gap: 4px; }
-
-    .nav-link {
-      padding: 8px 16px;
-      border-radius: var(--radius-full);
-      font-size: 14px;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all var(--duration-fast) var(--ease-default);
-      color: var(--apple-gray);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .info-btn.warning {
+      background: var(--apple-orange);
+      color: white;
+    }
+    .info-btn.warning:hover {
+      background: #ff9d00;
+      transform: scale(1.05);
     }
 
-    .nav-link.active { background: var(--apple-black); color: white; }
-    .nav-link:hover:not(.active) { background: rgba(0, 0, 0, 0.05); color: var(--apple-black); }
-
-    /* ========================================
-       14. 移动端底部导航
-       ======================================== */
-    .mobile-nav-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-      padding: 10px 16px;
-      display: flex;
-      justify-content: space-around;
-      z-index: 100;
+    /* Device Frames */
+    .device-frame {
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+      margin: 32px 0;
     }
-
-    .mobile-nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 8px 20px;
-      border-radius: var(--radius-md);
-      color: var(--apple-gray);
-      font-size: 11px;
-      font-weight: 600;
-      transition: all var(--duration-fast);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-    }
-
-    .mobile-nav-item.active { color: var(--apple-blue); background: rgba(0, 113, 227, 0.08); }
-    .mobile-nav-item svg { width: 26px; height: 26px; }
-
-    /* ========================================
-       15. 设备框架
-       ======================================== */
-    .device-frame { border-radius: var(--radius-3xl); overflow: hidden; box-shadow: var(--shadow-modal); margin: 32px 0; }
 
     .device-desktop {
       background: linear-gradient(180deg, #1d1d1f 0%, #000000 100%);
       padding: 20px;
-      border-radius: var(--radius-3xl);
+      border-radius: 32px;
     }
 
-    .device-desktop .screen { background: white; border-radius: var(--radius-2xl); overflow: hidden; }
+    .device-desktop .screen {
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+    }
 
     .device-mobile {
       background: linear-gradient(180deg, #1d1d1f 0%, #000000 100%);
@@ -683,48 +586,35 @@
       margin: 0 auto;
     }
 
-    .device-mobile .screen { background: white; border-radius: 36px; overflow: hidden; height: 640px; }
-
-    /* ========================================
-       16. Tabs 组件
-       ======================================== */
-    .tabs { width: 100%; }
-
-    .tabs-list {
-      display: inline-flex;
-      gap: 4px;
-      padding: 4px;
-      background: var(--muted);
-      border-radius: var(--radius-lg);
-      margin-bottom: 24px;
-    }
-
-    .tabs-trigger {
-      padding: 10px 20px;
-      border-radius: var(--radius-md);
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--muted-foreground);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      transition: all var(--duration-fast);
-    }
-
-    .tabs-trigger.active {
+    .device-mobile .screen {
       background: white;
-      color: var(--foreground);
-      box-shadow: var(--shadow-subtle);
+      border-radius: 36px;
+      overflow: hidden;
+      height: 640px;
     }
 
-    .tabs-trigger:hover:not(.active) { color: var(--foreground); }
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--apple-gray);
+      font-size: 14px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      margin-top: 80px;
+      background: white;
+    }
 
-    .tabs-content { display: none; }
-    .tabs-content.active { display: block; }
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    /* ========================================
-       17. 颜色展示
-       ======================================== */
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    /* Color Swatches */
     .color-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -737,182 +627,69 @@
     .color-box {
       width: 100%;
       height: 80px;
-      border-radius: var(--radius-xl);
+      border-radius: 20px;
       margin-bottom: 12px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
 
-    .color-name { font-size: 14px; font-weight: 700; color: var(--apple-black); }
-    .color-hex { font-size: 12px; color: var(--apple-gray); font-family: 'SF Mono', monospace; }
+    .color-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--apple-black);
+    }
 
-    /* ========================================
-       18. Feature Card
-       ======================================== */
-    .feature-card {
-      background: white;
-      border-radius: var(--radius-2xl);
-      padding: 40px;
-      text-align: center;
-      box-shadow: var(--shadow-subtle);
-      transition: all var(--duration-slow) var(--ease-bounce);
+    .color-hex {
+      font-size: 12px;
+      color: var(--apple-gray);
+      font-family: 'SF Mono', monospace;
+    }
+
+    /* Mobile Bottom Nav */
+    .mobile-nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-top: 1px solid rgba(0,0,0,0.1);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-around;
+      z-index: 100;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 20px;
+      border-radius: 16px;
+      color: var(--apple-gray);
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.2s;
+      background: transparent;
+      border: none;
       cursor: pointer;
     }
 
-    .feature-card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    .mobile-nav-item.active {
+      color: var(--apple-blue);
+      background: rgba(0,113,227,0.08);
     }
 
-    .feature-icon {
-      width: 80px;
-      height: 80px;
-      border-radius: var(--radius-xl);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-      font-size: 36px;
-    }
+    .mobile-nav-item svg { width: 26px; height: 26px; }
 
-    .feature-icon.blue { background: linear-gradient(135deg, #0071e3, #0077ed); color: white; }
-    .feature-icon.purple { background: linear-gradient(135deg, #5e5ce6, #bf5af2); color: white; }
-    .feature-icon.orange { background: linear-gradient(135deg, #ff9500, #ffcc00); color: white; }
-    .feature-icon.green { background: linear-gradient(135deg, #34c759, #30d158); color: white; }
-
-    .feature-card h4 { font-size: 22px; font-weight: 700; margin-bottom: 12px; color: var(--apple-black); }
-
-    /* ========================================
-       19. 动画
-       ======================================== */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes scaleFadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    @keyframes bounceSubtle {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(255, 149, 0, 0.4); }
-      50% { box-shadow: 0 0 40px rgba(255, 149, 0, 0.8); }
-    }
-
-    .animate-fade-in { animation: fadeInUp 0.6s ease-out forwards; }
-    .animate-scale-in { animation: scaleFadeIn 0.4s ease-out forwards; }
-    .animate-bounce { animation: bounceSubtle 0.5s ease-in-out infinite; }
-    .animate-glow { animation: pulseGlow 1.5s ease-in-out infinite; }
-
-    /* ========================================
-       20. 空状态
-       ======================================== */
-    .empty-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 48px 24px;
-      text-align: center;
-    }
-
-    .empty-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: var(--radius-3xl);
-      background: var(--muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      font-size: 32px;
-    }
-
-    .empty-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-    .empty-description { font-size: 15px; color: var(--muted-foreground); max-width: 300px; margin-bottom: 24px; }
-
-    /* ========================================
-       21. 错误状态
-       ======================================== */
-    .error-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 48px 24px;
-      text-align: center;
-      background: rgba(255, 59, 48, 0.05);
-      border-radius: var(--radius-2xl);
-      border: 1px solid rgba(255, 59, 48, 0.2);
-    }
-
-    .error-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: var(--radius-3xl);
-      background: rgba(255, 59, 48, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      font-size: 32px;
-    }
-
-    /* ========================================
-       22. 加载状态
-       ======================================== */
-    .skeleton {
-      background: linear-gradient(90deg, var(--muted) 25%, #e8e8ed 50%, var(--muted) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: var(--radius-md);
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-
-    .spinner {
-      width: 24px;
-      height: 24px;
-      border: 3px solid var(--border);
-      border-top-color: var(--apple-blue);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* ========================================
-       23. Footer
-       ======================================== */
-    .footer {
-      text-align: center;
-      padding: 60px 24px;
-      color: var(--apple-gray);
-      font-size: 14px;
-      border-top: 1px solid rgba(0, 0, 0, 0.06);
-      margin-top: 80px;
-      background: white;
-    }
-
-    /* ========================================
-       24. 响应式
-       ======================================== */
+    /* Responsive */
     @media (max-width: 768px) {
       .hero { padding: 80px 20px 60px; }
       .hero h1 { font-size: 48px; }
       .hero .subtitle { font-size: 20px; }
       h2 { font-size: 32px; margin: 56px 0 12px; }
-      .card-grid, .card-grid-2 { grid-template-columns: 1fr; }
+      .card-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
       .search-container { flex-direction: column; }
       .search-btn, .lucky-btn { width: 100%; }
@@ -920,364 +697,27 @@
       .info-actions { flex-direction: column; }
       .info-btn { width: 100%; }
       .color-grid { grid-template-columns: repeat(3, 1fr); }
-      .text-display { font-size: 48px; }
-      .text-h1 { font-size: 36px; }
-      .text-h2 { font-size: 28px; }
     }
 
     @media (min-width: 769px) and (max-width: 1024px) {
       .card-grid { grid-template-columns: repeat(2, 1fr); }
       .color-grid { grid-template-columns: repeat(4, 1fr); }
     }
-
-    /* ========================================
-       25. 辅助类
-       ======================================== */
-    .section { padding: 80px 0; }
-    .section-title { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 16px; text-align: center; }
-    .section-subtitle { font-size: 17px; color: var(--apple-gray); text-align: center; margin-bottom: 48px; }
-    h2 { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; margin: 80px 0 16px; text-align: center; }
-    h3 { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; margin: 48px 0 24px; }
-    h4 { font-size: 22px; font-weight: 700; margin: 32px 0 16px; }
-    p { color: var(--apple-gray); }
-    .mt-4 { margin-top: 16px; }
-    .mb-4 { margin-bottom: 16px; }
-    .flex { display: flex; }
-    .flex-col { flex-direction: column; }
-    .items-center { align-items: center; }
-    .justify-center { justify-content: center; }
-    .gap-4 { gap: 16px; }
-    .gap-2 { gap: 8px; }
-    .text-center { text-align: center; }
   </style>
 </head>
 <body>
-
   <!-- Hero Section -->
   <div class="hero">
     <h1>MuseTheory AI</h1>
     <p class="subtitle">智能音乐理论伴侣</p>
-    <button class="btn btn-primary btn-lg">立即体验 →</button>
-    <br><br>
-    <span class="badge badge-secondary" style="background: rgba(255,255,255,0.1); color: white;">v0.0.7</span>
+    <button class="cta-btn">立即体验 →</button>
+    <br>
+    <span class="version-badge">v0.0.7</span>
   </div>
 
   <div class="container">
-
-    <!-- =============================================
-         第一部分：设计系统
-         ============================================= -->
-    <h2>设计系统</h2>
-    <p class="section-subtitle">基于 Apple Human Interface Guidelines 与 shadcn/ui 组件规范</p>
-
-    <!-- 1. 色彩系统 -->
-    <h3>1.1 色彩系统</h3>
-
-    <h4>主色板 (Primary Colors)</h4>
-    <div class="color-grid">
-      <div class="color-swatch">
-        <div class="color-box" style="background: #0071e3;"></div>
-        <div class="color-name">Blue</div>
-        <div class="color-hex">#0071e3</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #0077ed;"></div>
-        <div class="color-name">Blue Hover</div>
-        <div class="color-hex">#0077ed</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #005bb5;"></div>
-        <div class="color-name">Blue Pressed</div>
-        <div class="color-hex">#005bb5</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: rgba(0, 113, 227, 0.12);"></div>
-        <div class="color-name">Blue Muted</div>
-        <div class="color-hex">12% opacity</div>
-      </div>
-    </div>
-
-    <h4 class="mt-4">语义色彩 (Semantic Colors)</h4>
-    <div class="color-grid">
-      <div class="color-swatch">
-        <div class="color-box" style="background: #34c759;"></div>
-        <div class="color-name">Success</div>
-        <div class="color-hex">#34c759</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #30d158;"></div>
-        <div class="color-name">Success Dark</div>
-        <div class="color-hex">#30d158</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #ff9500;"></div>
-        <div class="color-name">Warning</div>
-        <div class="color-hex">#ff9500</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #ff3b30;"></div>
-        <div class="color-name">Destructive</div>
-        <div class="color-hex">#ff3b30</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #5e5ce6;"></div>
-        <div class="color-name">Indigo</div>
-        <div class="color-hex">#5e5ce6</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #bf5af2;"></div>
-        <div class="color-name">Purple</div>
-        <div class="color-hex">#bf5af2</div>
-      </div>
-    </div>
-
-    <h4 class="mt-4">中性色 (Neutral Colors)</h4>
-    <div class="color-grid">
-      <div class="color-swatch">
-        <div class="color-box" style="background: #1d1d1f;"></div>
-        <div class="color-name">Black</div>
-        <div class="color-hex">#1d1d1f</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #86868b;"></div>
-        <div class="color-name">Gray</div>
-        <div class="color-hex">#86868b</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #f5f5f7;"></div>
-        <div class="color-name">Light Gray</div>
-        <div class="color-hex">#f5f5f7</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #d2d2d7;"></div>
-        <div class="color-name">Border</div>
-        <div class="color-hex">#d2d2d7</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #6e6e73;"></div>
-        <div class="color-name">Secondary</div>
-        <div class="color-hex">#6e6e73</div>
-      </div>
-      <div class="color-swatch">
-        <div class="color-box" style="background: #e8e8ed;"></div>
-        <div class="color-name">Hover Gray</div>
-        <div class="color-hex">#e8e8ed</div>
-      </div>
-    </div>
-
-    <!-- 2. 字体系统 -->
-    <h3>1.2 字体系统</h3>
-    <div class="card">
-      <div style="display: flex; flex-direction: column; gap: 16px;">
-        <div class="text-display">Display - 72px / 800</div>
-        <div class="text-h1">Heading 1 - 48px / 700</div>
-        <div class="text-h2">Heading 2 - 36px / 600</div>
-        <div class="text-h3">Heading 3 - 28px / 600</div>
-        <div class="text-h4">Heading 4 - 22px / 700</div>
-        <div class="text-body-lg">Body Large - 17px / 400 - 主要正文内容</div>
-        <div class="text-body">Body - 15px / 400 - 常规正文内容</div>
-        <div class="text-body-sm">Body Small - 14px / 400 - 次要信息</div>
-        <div class="text-caption">Caption - 13px / 500 - 标签说明</div>
-        <div class="text-overline">Overline - 11px / 600 / uppercase - 顶部标签</div>
-      </div>
-    </div>
-
-    <!-- 3. 间距系统 -->
-    <h3>1.3 间距与圆角系统</h3>
-    <div class="card">
-      <h4>圆角半径</h4>
-      <div class="flex gap-4" style="flex-wrap: wrap; margin-top: 16px;">
-        <div style="text-align: center;">
-          <div style="width: 48px; height: 48px; background: var(--apple-blue); border-radius: 8px;"></div>
-          <p class="mt-4">8px - sm</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="width: 48px; height: 48px; background: var(--apple-blue); border-radius: 12px;"></div>
-          <p class="mt-4">12px - md</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="width: 48px; height: 48px; background: var(--apple-blue); border-radius: 16px;"></div>
-          <p class="mt-4">16px - lg</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="width: 48px; height: 48px; background: var(--apple-blue); border-radius: 20px;"></div>
-          <p class="mt-4">20px - xl</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="width: 48px; height: 48px; background: var(--apple-blue); border-radius: 24px;"></div>
-          <p class="mt-4">24px - 2xl</p>
-        </div>
-        <div style="text-align: center;">
-          <div style="width: 48px; height: 48px; background: var(--apple-blue); border-radius: 9999px;"></div>
-          <p class="mt-4">9999px - full</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- 4. 阴影系统 -->
-    <h3>1.4 阴影系统</h3>
-    <div class="card-grid-2">
-      <div style="padding: 32px; background: white; border-radius: 24px; box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);">
-        <p class="text-h4">Subtle</p>
-        <p class="text-body-sm">默认卡片阴影</p>
-      </div>
-      <div style="padding: 32px; background: white; border-radius: 24px; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);">
-        <p class="text-h4">Card Hover</p>
-        <p class="text-body-sm">悬停状态阴影</p>
-      </div>
-      <div style="padding: 32px; background: white; border-radius: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);">
-        <p class="text-h4">Elevated</p>
-        <p class="text-body-sm">下拉菜单/弹出层</p>
-      </div>
-      <div style="padding: 32px; background: white; border-radius: 24px; box-shadow: 0 24px 64px rgba(0, 0, 0, 0.24);">
-        <p class="text-h4">Modal</p>
-        <p class="text-body-sm">模态框阴影</p>
-      </div>
-    </div>
-
-    <!-- 5. 动效系统 -->
-    <h3>1.5 动效系统</h3>
-    <div class="card-grid-2">
-      <div style="text-align: center; padding: 32px;">
-        <div class="animate-fade-in" style="width: 80px; height: 80px; background: var(--apple-blue); border-radius: 16px; margin: 0 auto 16px;"></div>
-        <p class="text-h4">Fade In Up</p>
-        <p class="text-body-sm">淡入上移动画</p>
-      </div>
-      <div style="text-align: center; padding: 32px;">
-        <div class="animate-bounce" style="width: 80px; height: 80px; background: var(--apple-orange); border-radius: 16px; margin: 0 auto 16px;"></div>
-        <p class="text-h4">Bounce</p>
-        <p class="text-body-sm">轻微弹跳效果</p>
-      </div>
-    </div>
-
-    <!-- =============================================
-         第二部分：基础组件
-         ============================================= -->
-    <h2>基础组件</h2>
-
-    <!-- Button 组件 -->
-    <h3>2.1 Button 按钮</h3>
-    <div class="card">
-      <h4>变体 (Variants)</h4>
-      <div class="flex gap-4" style="flex-wrap: wrap; margin: 16px 0;">
-        <button class="btn btn-primary">Primary</button>
-        <button class="btn btn-secondary">Secondary</button>
-        <button class="btn btn-outline">Outline</button>
-        <button class="btn btn-ghost">Ghost</button>
-        <button class="btn btn-destructive">Destructive</button>
-        <button class="btn btn-success">Success</button>
-        <button class="btn btn-warning">Warning</button>
-      </div>
-
-      <h4>尺寸 (Sizes)</h4>
-      <div class="flex gap-4 items-center" style="flex-wrap: wrap; margin: 16px 0;">
-        <button class="btn btn-primary btn-sm">Small</button>
-        <button class="btn btn-primary">Default</button>
-        <button class="btn btn-primary btn-lg">Large</button>
-        <button class="btn btn-primary btn-icon">Icon</button>
-      </div>
-
-      <h4>状态 (States)</h4>
-      <div class="flex gap-4" style="flex-wrap: wrap; margin: 16px 0;">
-        <button class="btn btn-primary" disabled>Disabled</button>
-        <button class="btn btn-primary">
-          <span class="spinner" style="width: 16px; height: 16px; border-width: 2px;"></span>
-          Loading
-        </button>
-      </div>
-    </div>
-
-    <!-- Input 组件 -->
-    <h3>2.2 Input 输入框</h3>
-    <div class="card">
-      <div class="flex flex-col gap-4">
-        <input type="text" class="input" placeholder="默认状态输入框">
-        <input type="text" class="input" placeholder="聚焦状态输入框" style="border-color: var(--apple-blue); box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15); background: white;">
-        <input type="text" class="input error" placeholder="错误状态输入框">
-        <input type="text" class="input" placeholder="禁用状态输入框" disabled>
-      </div>
-    </div>
-
-    <!-- Badge 组件 -->
-    <h3>2.3 Badge 徽章</h3>
-    <div class="card">
-      <div class="flex gap-4" style="flex-wrap: wrap;">
-        <span class="badge badge-default">Default</span>
-        <span class="badge badge-secondary">Secondary</span>
-        <span class="badge badge-outline">Outline</span>
-        <span class="badge badge-success">Success</span>
-        <span class="badge badge-warning">Warning</span>
-        <span class="badge badge-destructive">Destructive</span>
-      </div>
-      <div class="flex gap-4 mt-4" style="flex-wrap: wrap;">
-        <span class="badge badge-default" style="padding: 6px 14px; font-size: 13px;">C</span>
-        <span class="badge badge-default" style="padding: 6px 14px; font-size: 13px;">D</span>
-        <span class="badge badge-default" style="padding: 6px 14px; font-size: 13px;">E</span>
-        <span class="badge badge-default" style="padding: 6px 14px; font-size: 13px;">F</span>
-        <span class="badge badge-default" style="padding: 6px 14px; font-size: 13px;">G</span>
-        <span class="badge badge-default" style="padding: 6px 14px; font-size: 13px;">A</span>
-        <span class="badge badge-default" style="padding: 6px 14px; font-size: 13px;">B</span>
-      </div>
-    </div>
-
-    <!-- =============================================
-         第三部分：复合组件
-         ============================================= -->
-    <h2>复合组件</h2>
-
-    <!-- Tabs 组件 -->
-    <h3>3.1 Tabs 标签页</h3>
-    <div class="card">
-      <div class="tabs">
-        <div class="tabs-list">
-          <button class="tabs-trigger active">♪ 可视化</button>
-          <button class="tabs-trigger">💬 AI 导师</button>
-          <button class="tabs-trigger">🎨 艺术生成</button>
-        </div>
-        <div class="tabs-content active">
-          <p>可视化标签页内容 - 音阶与和弦可视化</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 组件 -->
-    <h3>3.2 Card 卡片</h3>
-    <div class="card-grid-2">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">♪ C Major Scale</div>
-          <div class="card-description">C - D - E - F - G - A - B</div>
-        </div>
-        <div class="card-content">
-          <p>大调音阶公式: 全-全-半-全-全-全-半</p>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-primary btn-sm">播放</button>
-          <button class="btn btn-outline btn-sm">详情</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">🎵 G7 和弦</div>
-          <div class="card-description">G - B - D - F</div>
-        </div>
-        <div class="card-content">
-          <p>属七和弦，包含根音、大三度、纯五度和小七度</p>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-success btn-sm">播放</button>
-          <button class="btn btn-outline btn-sm">详情</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- =============================================
-         第四部分：业务组件
-         ============================================= -->
-    <h2>业务组件</h2>
-
-    <!-- Feature Cards -->
-    <h3>4.1 Feature Cards 功能卡片</h3>
+    <!-- Features -->
+    <h2>三大核心功能</h2>
     <div class="card-grid">
       <div class="feature-card">
         <div class="feature-icon blue">♪</div>
@@ -1296,8 +736,45 @@
       </div>
     </div>
 
-    <!-- Navigation -->
-    <h3>4.2 Navigation 导航栏</h3>
+    <!-- Design System -->
+    <h2>设计系统</h2>
+    
+    <h3>配色方案</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-box" style="background: #0071e3;"></div>
+        <div class="color-name">Blue</div>
+        <div class="color-hex">#0071e3</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #34c759;"></div>
+        <div class="color-name">Green</div>
+        <div class="color-hex">#34c759</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #ff9500;"></div>
+        <div class="color-name">Orange</div>
+        <div class="color-hex">#ff9500</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #ff3b30;"></div>
+        <div class="color-name">Red</div>
+        <div class="color-hex">#ff3b30</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #5e5ce6;"></div>
+        <div class="color-name">Indigo</div>
+        <div class="color-hex">#5e5ce6</div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-box" style="background: #1d1d1f;"></div>
+        <div class="color-name">Black</div>
+        <div class="color-hex">#1d1d1f</div>
+      </div>
+    </div>
+
+    <!-- Navigation Preview -->
+    <h3>导航栏 (桌面端)</h3>
     <div class="card">
       <div class="nav-preview">
         <div class="nav-brand">
@@ -1309,15 +786,15 @@
           <a href="#" class="nav-link">💬 导师</a>
           <a href="#" class="nav-link">🎨 艺术</a>
         </div>
-        <div class="flex gap-2">
-          <button class="btn btn-ghost btn-icon" style="background: var(--muted);">🌙</button>
-          <button class="btn btn-ghost btn-icon" style="background: var(--muted);">🌐</button>
+        <div class="nav-actions" style="display:flex;gap:8px;">
+          <span style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f5f5f7;">🌙</span>
+          <span style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#f5f5f7;">🌐</span>
         </div>
       </div>
     </div>
 
-    <!-- Search -->
-    <h3>4.3 Search 搜索组件</h3>
+    <!-- Search Component -->
+    <h3>搜索组件</h3>
     <div class="card">
       <div class="search-container">
         <input type="text" class="search-input" placeholder="输入音阶或和弦，如：C大调、G7和弦..." value="C Major Scale">
@@ -1327,7 +804,7 @@
     </div>
 
     <!-- Piano Keyboard -->
-    <h3>4.4 Piano Keyboard 钢琴键盘</h3>
+    <h3>钢琴键盘</h3>
     <div class="card">
       <div class="piano-container">
         <div class="piano-keys">
@@ -1357,34 +834,11 @@
           <div class="white-key"></div>
         </div>
       </div>
-      <p class="text-center mt-4" style="color: var(--apple-gray);">高亮音符：C - E - G（C大调三和弦）</p>
-    </div>
-
-    <!-- Info Card -->
-    <h3>4.5 Info Card 信息卡片</h3>
-    <div class="card">
-      <div class="info-card">
-        <div class="info-card-title">🎵 C Major Scale</div>
-        <div class="info-notes">
-          <span class="info-note">C</span>
-          <span class="info-note">D</span>
-          <span class="info-note">E</span>
-          <span class="info-note">F</span>
-          <span class="info-note">G</span>
-          <span class="info-note">A</span>
-          <span class="info-note">B</span>
-        </div>
-        <p style="font-size: 15px; color: var(--apple-gray); margin-bottom: 24px;">音程: W - W - H - W - W - W - H (W=全音, H=半音)</p>
-        <div class="info-actions">
-          <button class="info-btn primary">▶️ 播放</button>
-          <button class="info-btn success">🎤 录音</button>
-          <button class="info-btn warning">📥 下载</button>
-        </div>
-      </div>
+      <p style="text-align: center; color: var(--apple-gray); margin-top: 20px;">高亮音符：C - E - G（C大调三和弦）</p>
     </div>
 
     <!-- Chat Component -->
-    <h3>4.6 Chat 聊天组件</h3>
+    <h3>聊天组件</h3>
     <div class="card">
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
         <div>
@@ -1395,7 +849,7 @@
                 <span style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1d1d1f,#434344);border-radius:12px;color:white;">🤖</span>
                 <span>AI 导师</span>
               </div>
-              <button class="btn btn-ghost btn-icon btn-sm">🗑️</button>
+              <span style="color:var(--apple-gray);cursor:pointer;">🗑️</span>
             </div>
             <div class="chat-messages">
               <div class="chat-bubble ai">你好！我是你的 AI 音乐理论导师。有什么关于和声、对位或作曲的问题吗？</div>
@@ -1432,8 +886,31 @@
       </div>
     </div>
 
+    <!-- Info Card -->
+    <h3>信息卡片</h3>
+    <div class="card">
+      <div class="info-card">
+        <div class="info-card-title">🎵 C Major Scale</div>
+        <div class="info-notes">
+          <span class="info-note">C</span>
+          <span class="info-note">D</span>
+          <span class="info-note">E</span>
+          <span class="info-note">F</span>
+          <span class="info-note">G</span>
+          <span class="info-note">A</span>
+          <span class="info-note">B</span>
+        </div>
+        <p style="font-size: 15px; color: var(--apple-gray); margin-bottom: 24px;">音程: W - W - H - W - W - W - H</p>
+        <div class="info-actions">
+          <button class="info-btn primary">▶️ 播放</button>
+          <button class="info-btn success">🎤 录音</button>
+          <button class="info-btn warning">📥 下载</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Mobile Bottom Nav -->
-    <h3>4.7 Mobile Bottom Nav 移动端底部导航</h3>
+    <h3>移动端底部导航</h3>
     <div class="card">
       <div style="max-width: 400px; margin: 0 auto; position: relative; height: 100px;">
         <div class="mobile-nav-bar" style="position: absolute; bottom: 0; left: 0; right: 0; border-radius: 24px 24px 0 0;">
@@ -1453,202 +930,10 @@
       </div>
     </div>
 
-    <!-- =============================================
-         第五部分：交互状态
-         ============================================= -->
-    <h2>交互状态</h2>
-
-    <!-- Empty State -->
-    <h3>5.1 Empty State 空状态</h3>
-    <div class="card">
-      <div class="empty-state">
-        <div class="empty-icon">🔍</div>
-        <div class="empty-title">未找到匹配结果</div>
-        <div class="empty-description">请尝试其他关键词，如 "C Major"、"D Minor" 或 "G7 和弦"</div>
-        <button class="btn btn-outline btn-sm">清除搜索</button>
-      </div>
-    </div>
-
-    <!-- Error State -->
-    <h3>5.2 Error State 错误状态</h3>
-    <div class="card">
-      <div class="error-state">
-        <div class="error-icon">⚠️</div>
-        <div class="empty-title">播放失败</div>
-        <div class="empty-description">无法播放当前音频，请检查音频设备连接后重试</div>
-        <div class="flex gap-4 mt-4">
-          <button class="btn btn-outline btn-sm">取消</button>
-          <button class="btn btn-destructive btn-sm">重试</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    <h3>5.3 Loading State 加载状态</h3>
-    <div class="card">
-      <div style="display: flex; flex-direction: column; gap: 24px;">
-        <!-- Spinner -->
-        <div class="flex items-center gap-4">
-          <div class="spinner"></div>
-          <span>正在加载...</span>
-        </div>
-        <!-- Skeleton -->
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <div class="skeleton" style="height: 20px; width: 30%;"></div>
-          <div class="skeleton" style="height: 16px; width: 60%;"></div>
-          <div class="skeleton" style="height: 120px; width: 100%;"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- =============================================
-         第六部分：设备响应式
-         ============================================= -->
-    <h2>设备响应式</h2>
-
-    <h3>6.1 设备框架</h3>
-    <div class="card-grid-2">
-      <div>
-        <h4 style="margin-bottom: 16px;">桌面端</h4>
-        <div class="device-frame device-desktop">
-          <div class="screen" style="height: 400px; padding: 24px;">
-            <div class="nav-preview" style="margin-bottom: 24px;">
-              <div class="nav-brand">
-                <div class="nav-brand-icon" style="width: 36px; height: 36px; font-size: 16px;">♪</div>
-                <span class="nav-brand-text" style="font-size: 16px;">MuseTheory AI</span>
-              </div>
-              <div class="nav-links">
-                <a href="#" class="nav-link active" style="padding: 6px 12px; font-size: 12px;">♪ 可视化</a>
-                <a href="#" class="nav-link" style="padding: 6px 12px; font-size: 12px;">💬 导师</a>
-              </div>
-            </div>
-            <div class="piano-container" style="padding: 24px; border-radius: 20px;">
-              <div class="piano-keys" style="height: 120px;">
-                <div class="white-key" style="width: 36px; height: 120px;"></div>
-                <div class="black-key" style="width: 24px; height: 70px; left: 24px;"></div>
-                <div class="white-key" style="width: 36px; height: 120px;"></div>
-                <div class="black-key" style="width: 24px; height: 70px; left: 60px;"></div>
-                <div class="white-key" style="width: 36px; height: 120px;"></div>
-                <div class="white-key" style="width: 36px; height: 120px;"></div>
-                <div class="black-key highlighted" style="width: 24px; height: 70px; left: 132px;"></div>
-                <div class="white-key highlighted" style="width: 36px; height: 120px;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <h4 style="margin-bottom: 16px;">移动端</h4>
-        <div class="device-mobile">
-          <div class="screen">
-            <div style="padding: 16px; border-bottom: 1px solid var(--border);">
-              <div class="nav-brand">
-                <div class="nav-brand-icon" style="width: 32px; height: 32px; font-size: 14px;">♪</div>
-                <span class="nav-brand-text" style="font-size: 14px;">MuseTheory</span>
-              </div>
-            </div>
-            <div style="padding: 16px;">
-              <input type="text" class="input" placeholder="搜索..." style="margin-bottom: 16px;">
-              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <span class="badge badge-default">C</span>
-                <span class="badge badge-default">D</span>
-                <span class="badge badge-default">E</span>
-                <span class="badge badge-success">F</span>
-                <span class="badge badge-success">G</span>
-                <span class="badge badge-success">A</span>
-              </div>
-            </div>
-            <div class="mobile-nav-bar" style="position: relative; border-radius: 0; margin-top: auto;">
-              <button class="mobile-nav-item active">
-                <span style="font-size:20px;">♪</span>
-                <span>可视化</span>
-              </button>
-              <button class="mobile-nav-item">
-                <span style="font-size:20px;">💬</span>
-                <span>导师</span>
-              </button>
-              <button class="mobile-nav-item">
-                <span style="font-size:20px;">🎨</span>
-                <span>艺术</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer -->
     <div class="footer">
-      <p style="margin-bottom: 8px;"><strong>MuseTheory AI</strong> - 完整设计系统原型 v0.0.7</p>
-      <p>基于 Apple Human Interface Guidelines 与 shadcn/ui 组件规范 · 最后更新: 2026-06-09</p>
-      <p style="margin-top: 16px;"><a href="SPEC.md" style="color: var(--apple-blue);">查看完整设计规范文档 →</a></p>
+      <p style="margin-bottom: 8px;"><strong>MuseTheory AI</strong> - 交互原型设计规范 v0.0.7</p>
+      <p>参考 Apple 设计风格 · 最后更新: 2026-06-08</p>
     </div>
-
   </div>
-
-  <!-- Mobile Bottom Nav (Fixed) -->
-  <div class="mobile-nav-bar" id="mobileNav" style="display: none;">
-    <button class="mobile-nav-item active">
-      <span style="font-size:24px;">♪</span>
-      <span>可视化</span>
-    </button>
-    <button class="mobile-nav-item">
-      <span style="font-size:24px;">💬</span>
-      <span>导师</span>
-    </button>
-    <button class="mobile-nav-item">
-      <span style="font-size:24px;">🎨</span>
-      <span>艺术</span>
-    </button>
-  </div>
-
-  <script>
-    // 响应式导航显示
-    function checkMobile() {
-      const mobileNav = document.getElementById('mobileNav');
-      if (window.innerWidth <= 768) {
-        mobileNav.style.display = 'flex';
-      } else {
-        mobileNav.style.display = 'none';
-      }
-    }
-    window.addEventListener('resize', checkMobile);
-    checkMobile();
-
-    // Tab 切换
-    document.querySelectorAll('.tabs-trigger').forEach(trigger => {
-      trigger.addEventListener('click', function() {
-        const parent = this.closest('.tabs');
-        parent.querySelectorAll('.tabs-trigger').forEach(t => t.classList.remove('active'));
-        parent.querySelectorAll('.tabs-content').forEach(c => c.classList.remove('active'));
-        this.classList.add('active');
-        const contentId = this.textContent.includes('♪') ? 'tab-visualizer' :
-                         this.textContent.includes('💬') ? 'tab-chat' : 'tab-art';
-        const content = parent.querySelector('.tabs-content');
-        if (content) content.classList.add('active');
-      });
-    });
-
-    // 钢琴按键交互
-    document.querySelectorAll('.white-key, .black-key').forEach(key => {
-      key.addEventListener('mousedown', function() {
-        this.style.transform = this.classList.contains('white-key') ? 'translateY(4px)' : 'translateY(3px)';
-      });
-      key.addEventListener('mouseup', function() {
-        this.style.transform = '';
-      });
-      key.addEventListener('mouseleave', function() {
-        this.style.transform = '';
-      });
-    });
-
-    // 移动端底部导航切换
-    document.querySelectorAll('.mobile-nav-item').forEach(item => {
-      item.addEventListener('click', function() {
-        document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-  </script>
 </body>
 </html>
