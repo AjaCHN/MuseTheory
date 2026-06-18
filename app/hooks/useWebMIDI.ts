@@ -1,71 +1,107 @@
-// app/hooks/useWebMIDI.ts v0.0.3
-import { useEffect, useState } from 'react';
+// app/hooks/useWebMIDI.ts v0.0.7
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { audioService } from '../services/audioService';
 import { useMusicStore } from '../store/useMusicStore';
 
-export const useWebMIDI = () => {
+interface UseWebMIDIResult {
+  midiAccess: MIDIAccess | null;
+  error: string | null;
+}
+
+export const useWebMIDI = (): UseWebMIDIResult => {
   const { instrument } = useMusicStore();
-  const [midiAccess, setMidiAccess] = useState<any | null>(null);
+  const [midiAccess, setMidiAccess] = useState<MIDIAccess | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const accessRef = useRef<MIDIAccess | null>(null);
+
+  // Keep the latest instrument in a ref so note playback always uses the
+  // current instrument without triggering effect re-runs.
+  const instrumentRef = useRef(instrument);
+  useEffect(() => {
+    instrumentRef.current = instrument;
+  }, [instrument]);
+
+  const playNoteFromMIDI = useCallback((midiNote: number) => {
+    const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const octave = Math.floor(midiNote / 12) - 1;
+    const noteName = notes[midiNote % 12];
+    const fullNote = `${noteName}${octave}`;
+    audioService.playNotes([fullNote], instrumentRef.current, '8n').catch((err) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[useWebMIDI] Failed to play MIDI note:', err);
+      }
+    });
+  }, []);
+
+  const handleMIDIMessage = useCallback((message: Event) => {
+    const data = (message as MIDIMessageEvent).data;
+    if (!data || data.length === 0) return;
+
+    const command = data[0];
+    const note = data[1];
+    const velocity = data.length > 2 ? data[2] : 0;
+
+    switch (command) {
+      case 144: // note-on
+        if (velocity > 0) {
+          playNoteFromMIDI(note);
+        }
+        break;
+      case 128: // note-off
+        // currently handled by the short note duration.
+        break;
+      default:
+        break;
+    }
+  }, [playNoteFromMIDI]);
 
   useEffect(() => {
-    if (navigator.requestMIDIAccess) {
-      navigator.requestMIDIAccess()
-        .then(onMIDISuccess, onMIDIFailure);
-    } else {
-      setError("Web MIDI API not supported in this browser.");
+    if (typeof navigator === 'undefined' || !('requestMIDIAccess' in navigator)) {
+      setError('Web MIDI API not supported in this browser.');
+      return;
     }
 
-    function onMIDISuccess(access: any) {
-      setMidiAccess(access);
-      for (const input of access.inputs.values()) {
-        input.onmidimessage = getMIDIMessage;
-      }
-      access.onstatechange = (e) => {
-        // Handle connection/disconnection
-      };
-    }
+    let disposed = false;
 
-    function onMIDIFailure() {
-      setError("Could not access your MIDI devices.");
-    }
-
-    function getMIDIMessage(message: any) {
-      const command = message.data[0];
-      const note = message.data[1];
-      const velocity = (message.data.length > 2) ? message.data[2] : 0;
-
-      switch (command) {
-        case 144: // noteOn
-          if (velocity > 0) {
-            playNoteFromMIDI(note, velocity);
+    navigator
+      .requestMIDIAccess()
+      .then((access: MIDIAccess) => {
+        if (disposed) return;
+        accessRef.current = access;
+        setMidiAccess(access);
+        try {
+          for (const input of access.inputs.values()) {
+            input.onmidimessage = handleMIDIMessage;
           }
-          break;
-        case 128: // noteOff
-          // Handle note off if needed
-          break;
-      }
-    }
-
-    function playNoteFromMIDI(midiNote: number, velocity: number) {
-      // Simple conversion from MIDI note to frequency/note name
-      // A4 = 69
-      const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-      const octave = Math.floor(midiNote / 12) - 1;
-      const noteName = notes[midiNote % 12];
-      const fullNote = `${noteName}${octave}`;
-      
-      audioService.playNotes([fullNote], instrument, '8n');
-    }
+        } catch (err) {
+          if (process.env.NODE_ENV === 'development') {
+            console.error('[useWebMIDI] Failed to enumerate MIDI inputs:', err);
+          }
+        }
+      })
+      .catch(() => {
+        if (disposed) return;
+        setError('Could not access your MIDI devices.');
+      });
 
     return () => {
-      if (midiAccess) {
-        for (const input of midiAccess.inputs.values()) {
-          input.onmidimessage = null;
+      disposed = true;
+      const latestAccess = accessRef.current;
+      if (latestAccess) {
+        try {
+          for (const input of latestAccess.inputs.values()) {
+            input.onmidimessage = null;
+          }
+        } catch (err) {
+          if (process.env.NODE_ENV === 'development') {
+            console.error('[useWebMIDI] Failed to clean up MIDI listeners:', err);
+          }
         }
       }
     };
-  }, [instrument, midiAccess]);
+    // effect re-runs when the message handler changes to pick up new
+    // dependencies (e.g. instrument) without re-running the whole setup.
+  }, [handleMIDIMessage]);
 
   return { midiAccess, error };
 };
