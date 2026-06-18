@@ -1,10 +1,13 @@
-// app/loading.tsx v0.0.7
+// app/loading.tsx v0.0.7 - Apple Style
 import { Loader2 } from 'lucide-react';
 
 export default function Loading() {
   return (
     <div className="flex items-center justify-center min-h-[400px]">
-      <div className="flex flex-col items-center gap-4 text-[#0071e3] dark:text-[#0A84FF]">
+      <div
+        className="flex flex-col items-center gap-4"
+        style={{ color: '#0071e3' }}
+      >
         <Loader2 className="w-8 h-8 animate-spin" />
         <p className="font-medium animate-pulse">Loading MuseTheory AI...</p>
       </div>

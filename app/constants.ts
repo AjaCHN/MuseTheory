@@ -1,4 +1,4 @@
-// app/constants.ts v0.0.2
+// app/constants.ts v0.0.7
 // Models
 export const MODEL_THEORY_LOGIC = 'gemini-3-flash-preview';
 export const MODEL_CHAT_TUTOR = 'gemini-3-pro-preview';
