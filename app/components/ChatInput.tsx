@@ -4,6 +4,8 @@
 import React from 'react';
 import { Send } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface ChatInputProps {
   input: string;
@@ -17,20 +19,22 @@ const ChatInput: React.FC<ChatInputProps> = ({ input, setInput, isSending, onSen
 
   return (
     <form onSubmit={onSend} className="chat-input-area">
-      <input
+      <Input
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder={t.chat.placeholder}
-        className="chat-input"
+        className="chat-input border-2 focus:border-primary"
+        disabled={isSending}
       />
-      <button
+      <Button
         type="submit"
         disabled={!input.trim() || isSending}
-        className="chat-send-btn"
+        size="icon"
+        className="chat-send-btn rounded-full"
       >
         <Send size={20} />
-      </button>
+      </Button>
     </form>
   );
 };

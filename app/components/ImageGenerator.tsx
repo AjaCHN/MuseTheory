@@ -7,6 +7,8 @@ import { ImageSize, GeneratedImage } from '../types';
 import { Loader2, Image as ImageIcon, Download } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import AIStudioKeySelector from './AIStudioKeySelector';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface AIStudioClient {
   hasSelectedApiKey: () => Promise<boolean>;
@@ -60,9 +62,11 @@ const ImageGenerator: React.FC = () => {
     try {
       const imageUrl = await generateMusicImage(prompt, size);
       setGeneratedImage({ url: imageUrl, prompt: prompt });
-    } catch (err: any) {
-      console.error(err);
-      if (err.message && err.message.includes("Requested entity was not found")) {
+    } catch (err: unknown) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[ImageGenerator] generateMusicImage failed:', err instanceof Error ? err.message : String(err));
+      }
+      if (err instanceof Error && err.message.includes("Requested entity was not found")) {
         setHasKey(false);
         setError("API Key issue. Please select a valid paid project key.");
       } else {
@@ -119,31 +123,27 @@ const ImageGenerator: React.FC = () => {
             <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.art.sizeLabel}</label>
             <div className="flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-700/50 rounded-2xl">
               {(['1K', '2K', '4K'] as ImageSize[]).map((s) => (
-                <button
+                <Button
                   key={s}
                   type="button"
+                  variant={size === s ? "default" : "ghost"}
                   onClick={() => setSize(s)}
-                  className={`
-                    flex-1 py-3.5 px-4 rounded-xl font-semibold text-base transition-all duration-300
-                    ${size === s 
-                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-[0_2px_16px_rgba(0,0,0,0.1)]' 
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}
-                  `}
+                  className="flex-1 py-3.5 px-4 rounded-xl font-semibold text-base transition-all duration-300"
                 >
                   {s}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={loading || !prompt.trim()}
             className="info-btn primary w-full py-5 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImageIcon className="w-5 h-5" />}
             {t.art.generate}
-          </button>
+          </Button>
         </form>
       </div>
 
@@ -159,14 +159,14 @@ const ImageGenerator: React.FC = () => {
         <div className="info-card animate-fade-in relative group">
           <div className="aspect-square w-full relative rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-900/50">
             <img src={generatedImage.url} alt={generatedImage.prompt} className="w-full h-full object-contain" />
-            <button
+            <Button
               onClick={handleDownload}
               className="info-btn absolute top-6 right-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-slate-800 dark:text-slate-100 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
               title={t.art.download}
             >
               <Download className="w-5 h-5" />
               <span className="font-semibold">{t.art.download}</span>
-            </button>
+            </Button>
           </div>
           <p className="mt-6 text-center text-slate-500 dark:text-slate-400 text-base italic">"{generatedImage.prompt}"</p>
         </div>

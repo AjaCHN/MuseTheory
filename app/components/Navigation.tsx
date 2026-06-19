@@ -8,14 +8,19 @@ import { Music, MessageCircle, Image as ImageIcon, Languages, ChevronDown, Sun, 
 import { useLanguage } from '../contexts/LanguageContext';
 import { Language } from '../types';
 import { useTheme } from 'next-themes';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 export default function Navigation() {
   const pathname = usePathname();
   const { language, setLanguage, t } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-  const langMenuRef = useRef<HTMLDivElement>(null);
 
   const languages: { code: Language; label: string }[] = [
     { code: 'en', label: 'English' },
@@ -33,13 +38,6 @@ export default function Navigation() {
 
   useEffect(() => {
     setMounted(true);
-    const handleClickOutside = (event: MouseEvent) => {
-      if (langMenuRef.current && !langMenuRef.current.contains(event.target as Node)) {
-        setIsLangMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const isActive = (path: string) => pathname === path;
@@ -100,47 +98,39 @@ export default function Navigation() {
 
             {/* Theme Toggle - Apple Style */}
             {mounted && (
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                className="p-2 rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 hover:scale-105"
                 title="Toggle Theme"
+                className="rounded-full"
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
+              </Button>
             )}
 
             {/* Language Selector - Apple Style */}
-            <div className="relative" ref={langMenuRef}>
-              <button
-                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                className="flex items-center gap-1 p-2 rounded-full text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
-                title="Switch Language"
-              >
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 p-2 rounded-full text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200">
                 <Languages className="w-5 h-5" />
                 <ChevronDown className="w-3 h-3 hidden sm:inline" />
-              </button>
-
-              {isLangMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200/50 dark:border-slate-700/50 py-2 z-50 backdrop-blur-xl">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        setLanguage(lang.code);
-                        setIsLangMenuOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                        language === lang.code 
-                          ? 'text-blue-600 dark:text-blue-400 font-semibold bg-blue-50/50 dark:bg-blue-900/20' 
-                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      {lang.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => setLanguage(lang.code)}
+                    className={
+                      language === lang.code
+                        ? 'text-primary font-semibold'
+                        : ''
+                    }
+                  >
+                    {lang.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

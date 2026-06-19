@@ -1,7 +1,7 @@
 // app/layout.tsx v0.0.7
 import './style.css';
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Geist } from 'next/font/google';
 import Providers from './components/Providers';
 import { ThemeProvider } from './components/ThemeProvider';
 import Navigation from './components/Navigation';
@@ -9,6 +9,11 @@ import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 import { Suspense } from 'react';
 import Loading from './loading';
+import { cn } from "@/lib/utils";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -58,22 +63,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body
         className={`${inter.className} bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 min-h-screen flex flex-col transition-colors duration-300`}
         suppressHydrationWarning
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Providers>
-            <Navigation />
-            <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-              <Suspense fallback={<Loading />}>
-                <ErrorBoundary>{children}</ErrorBoundary>
-              </Suspense>
-            </main>
-            <Footer />
-          </Providers>
+          <TooltipProvider>
+            <Providers>
+              <Navigation />
+              <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+                <Suspense fallback={<Loading />}>
+                  <ErrorBoundary>{children}</ErrorBoundary>
+                </Suspense>
+              </main>
+              <Footer />
+            </Providers>
+          </TooltipProvider>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );

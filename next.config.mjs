@@ -1,10 +1,9 @@
-// next.config.mjs v0.0.2
+// next.config.mjs v0.0.8
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  env: {
-    API_KEY: process.env.GEMINI_API_KEY,
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
-  },
+  // Note: API keys are accessed server-side only via process.env
+  // Never expose sensitive keys to the client via env config
+  reactStrictMode: true,
 };
 
 export default nextConfig;
