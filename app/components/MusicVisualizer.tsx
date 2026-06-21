@@ -35,7 +35,9 @@ const MusicVisualizer: React.FC = () => {
       const result = await fetchMusicTheoryData(searchQuery, language);
       setData(result);
     } catch (err) {
-      console.error(err);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[MusicVisualizer] fetchMusicTheoryData failed:', err instanceof Error ? err.message : String(err));
+      }
       setError(t.visualizer.error);
     } finally {
       setLoading(false);

@@ -1,7 +1,7 @@
-# MuseTheory AI - 设计系统规范 v0.0.7
+# MuseTheory AI - 设计系统规范 v0.0.8
 
 > 基于 Apple Human Interface Guidelines 与 shadcn/ui 组件规范
-> 最后更新: 2026-06-09
+> 最后更新: 2026-06-19
 
 ---
 
@@ -1532,6 +1532,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 ---
 
-**文档版本**: v0.0.7
-**更新日期**: 2026-06-09
+**文档版本**: v0.0.8
+**更新日期**: 2026-06-19
 **维护者**: MuseTheory Design Team

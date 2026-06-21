@@ -1,4 +1,4 @@
-// app/error.tsx v0.0.7
+// app/error.tsx v0.0.8 - Apple Style
 'use client';
 
 import { useEffect } from 'react';
@@ -11,16 +11,29 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    // Log only the error message in production to avoid leaking stack traces
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[ErrorBoundary]', error);
+    } else {
+      console.error('[ErrorBoundary]', error.message, error.digest);
+    }
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] text-center space-y-4">
-      <h2 className="text-2xl font-bold text-[#FF3B30] dark:text-[#FF453A]">Something went wrong!</h2>
-      <p className="text-slate-600 dark:text-slate-400">We encountered an unexpected error.</p>
+    <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
+      <h2
+        className="text-2xl font-bold mb-3"
+        style={{ color: 'var(--destructive, #ff3b30)' }}
+      >
+        Something went wrong
+      </h2>
+      <p className="text-slate-500 dark:text-slate-400 mb-6 max-w-sm">
+        We encountered an unexpected error.  Please try again.
+      </p>
       <button
         onClick={() => reset()}
-        className="info-btn primary w-40"
+        className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium text-white transition-opacity hover:opacity-80"
+        style={{ backgroundColor: 'var(--primary, #0071e3)' }}
       >
         Try again
       </button>

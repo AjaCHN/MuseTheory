@@ -6,7 +6,7 @@
 
 | File | Description | Version |
 |------|-------------|---------|
-| [prototype.html](prototype.html) | 完整的交互式原型与 UI/UX 规范 | v0.0.7 |
+| [prototype.html](prototype.html) | 完整的交互式原型与 UI/UX 规范 | v0.0.8 |
 
 ## Contents
 
