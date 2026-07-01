@@ -1,4 +1,4 @@
-// app/loading.tsx v0.0.7 - Apple Style
+// app/loading.tsx v0.0.8 - Apple Style
 import { Loader2 } from 'lucide-react';
 
 export default function Loading() {

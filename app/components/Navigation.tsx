@@ -1,7 +1,7 @@
-// app/components/Navigation.tsx v0.0.7
+// app/components/Navigation.tsx v0.0.8
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Music, MessageCircle, Image as ImageIcon, Languages, ChevronDown, Sun, Moon } from 'lucide-react';
@@ -18,9 +18,8 @@ import {
 
 export default function Navigation() {
   const pathname = usePathname();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, t, mounted } = useLanguage();
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
   const languages: { code: Language; label: string }[] = [
     { code: 'en', label: 'English' },
@@ -35,10 +34,6 @@ export default function Navigation() {
     { code: 'ko', label: '한국어' },
     { code: 'ru', label: 'Русский' }
   ];
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const isActive = (path: string) => pathname === path;
 

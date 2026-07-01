@@ -1,6 +1,6 @@
 # MuseTheory AI
 
-[English Documentation](./README_EN.md)
+[English Documentation](./README.md) | [中文文档](./README_CN.md)
 
 一款智能音乐理论学习助手，支持音阶和弦可视化、AI 导师问答和音乐概念艺术生成。
 
@@ -84,4 +84,4 @@ MIT License
 
 ---
 
-**版本**: v0.0.6
+**版本**: v0.0.8

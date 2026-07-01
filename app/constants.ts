@@ -1,4 +1,4 @@
-// app/constants.ts v0.0.7
+// app/constants.ts v0.0.8
 // Models
 export const MODEL_THEORY_LOGIC = 'gemini-3-flash-preview';
 export const MODEL_CHAT_TUTOR = 'gemini-3-pro-preview';
@@ -14,7 +14,7 @@ export const OCTAVE_NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A
 // Translations
 export const TRANSLATIONS = {
   en: {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "Visualizer",
       chat: "Tutor Chat",
@@ -53,7 +53,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. Powered by Google Gemini."
   },
   'zh-CN': {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "乐理可视化",
       chat: "AI 导师",
@@ -92,7 +92,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. 由 Google Gemini 驱动。"
   },
   'zh-TW': {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "樂理視覺化",
       chat: "AI 導師",
@@ -131,7 +131,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. 由 Google Gemini 驅動。"
   },
   es: {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "Visualizador",
       chat: "Tutor Chat",
@@ -170,7 +170,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. Desarrollado por Google Gemini."
   },
   ar: {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "المتخيل",
       chat: "محادثة المعلم",
@@ -209,7 +209,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. مدعوم من Google Gemini."
   },
   fr: {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "Visualiseur",
       chat: "Tuteur Chat",
@@ -248,7 +248,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. Propulsé par Google Gemini."
   },
   'pt-BR': {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "Visualizador",
       chat: "Tutor Chat",
@@ -287,7 +287,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. Desenvolvido por Google Gemini."
   },
   de: {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "Visualisierer",
       chat: "Tutor Chat",
@@ -326,7 +326,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. Unterstützt von Google Gemini."
   },
   ja: {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "ビジュアライザー",
       chat: "AIチューター",
@@ -365,7 +365,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. Powered by Google Gemini."
   },
   ko: {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "시각화 도구",
       chat: "튜터 채팅",
@@ -404,7 +404,7 @@ export const TRANSLATIONS = {
     footer: "MuseTheory AI. Powered by Google Gemini."
   },
   ru: {
-    appTitle: "MuseTheory AI v0.0.7",
+    appTitle: "MuseTheory AI v0.0.8",
     nav: {
       visualizer: "Визуализатор",
       chat: "Чат с репетитором",

@@ -1,7 +1,7 @@
 // app/components/ImageGenerator.tsx v0.0.8 - Apple Style
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { generateMusicImage } from '../services/geminiService';
 import { ImageSize, GeneratedImage } from '../types';
 import { Loader2, Image as ImageIcon, Download } from 'lucide-react';
@@ -15,6 +15,11 @@ interface AIStudioClient {
   openSelectKey: () => Promise<void>;
 }
 
+const getAIStudio = (): AIStudioClient | undefined => {
+  if (typeof window === 'undefined') return undefined;
+  return (window as unknown as { aistudio?: AIStudioClient }).aistudio;
+};
+
 const ImageGenerator: React.FC = () => {
   const { t } = useLanguage();
   const [prompt, setPrompt] = useState('');
@@ -24,24 +29,22 @@ const ImageGenerator: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [hasKey, setHasKey] = useState<boolean>(false);
 
-  useEffect(() => {
-    checkKeyStatus();
-  }, []);
-
-  const getAIStudio = (): AIStudioClient | undefined => {
-    if (typeof window === 'undefined') return undefined;
-    return (window as any).aistudio as AIStudioClient | undefined;
-  };
-
-  const checkKeyStatus = async () => {
+  const checkKeyStatus = useCallback(async () => {
     const aiStudio = getAIStudio();
     if (aiStudio?.hasSelectedApiKey) {
       const selected = await aiStudio.hasSelectedApiKey();
       setHasKey(selected);
     } else {
-      setHasKey(true); 
+      setHasKey(true);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // checkKeyStatus reads the external AI Studio key state asynchronously;
+    // setState only runs after the awaited promise resolves.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void checkKeyStatus();
+  }, [checkKeyStatus]);
 
   const handleSelectKey = async () => {
     const aiStudio = getAIStudio();
@@ -158,6 +161,7 @@ const ImageGenerator: React.FC = () => {
       {generatedImage && (
         <div className="info-card animate-fade-in relative group">
           <div className="aspect-square w-full relative rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-900/50">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={generatedImage.url} alt={generatedImage.prompt} className="w-full h-full object-contain" />
             <Button
               onClick={handleDownload}
@@ -168,7 +172,7 @@ const ImageGenerator: React.FC = () => {
               <span className="font-semibold">{t.art.download}</span>
             </Button>
           </div>
-          <p className="mt-6 text-center text-slate-500 dark:text-slate-400 text-base italic">"{generatedImage.prompt}"</p>
+          <p className="mt-6 text-center text-slate-500 dark:text-slate-400 text-base italic">&ldquo;{generatedImage.prompt}&rdquo;</p>
         </div>
       )}
     </div>

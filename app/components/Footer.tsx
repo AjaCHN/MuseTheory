@@ -1,16 +1,11 @@
-// app/components/Footer.tsx v0.0.7
+// app/components/Footer.tsx v0.0.8
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Footer() {
-  const { t } = useLanguage();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const { t, mounted } = useLanguage();
 
   return (
     <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-auto transition-colors duration-300">

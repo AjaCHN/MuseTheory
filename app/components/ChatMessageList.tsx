@@ -1,4 +1,4 @@
-// app/components/ChatMessageList.tsx v0.0.7 - Apple Style
+// app/components/ChatMessageList.tsx v0.0.8 - Apple Style
 'use client';
 
 import React, { useMemo } from 'react';

@@ -1,7 +1,7 @@
-// app/contexts/LanguageContext.tsx v0.0.7
+// app/contexts/LanguageContext.tsx v0.0.8
 'use client';
 
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useSyncExternalStore, useCallback, useContext, ReactNode } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
@@ -24,63 +24,57 @@ const safeParseLanguage = (value: string | null): Language => {
   return 'en';
 };
 
+// SSR always returns the default language to avoid hydration mismatches.
+const getServerSnapshot = (): Language => 'en';
+
+const subscribe = (callback: () => void): (() => void) => {
+  if (typeof window === 'undefined') return () => {};
+  window.addEventListener('storage', callback);
+  return () => {
+    window.removeEventListener('storage', callback);
+  };
+};
+
+const getClientSnapshot = (): Language => {
+  try {
+    return safeParseLanguage(localStorage.getItem('language'));
+  } catch {
+    return 'en';
+  }
+};
+
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('en');
-  const [mounted, setMounted] = useState(false);
+  // useSyncExternalStore handles SSR hydration safely: the server renders
+  // with the default ('en') snapshot and the client hydrates with the same
+  // value on the first pass, then re-renders with the persisted language.
+  const language = useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
-  useEffect(() => {
-    let resolved: Language = 'en';
-    try {
-      if (typeof window !== 'undefined' && 'localStorage' in window) {
-        const saved = localStorage.getItem('language');
-        resolved = safeParseLanguage(saved);
-      }
-    } catch (e) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('[LanguageContext] Failed to read language from localStorage:', e);
-      }
-    }
-    setLanguageState(resolved);
-    setMounted(true);
-  }, []);
-
-  const setLanguage = (lang: Language) => {
+  const setLanguage = useCallback((lang: Language) => {
     try {
       if (typeof window !== 'undefined' && 'localStorage' in window) {
         localStorage.setItem('language', lang);
+        // Notify same-tab listeners since the `storage` event only fires cross-tab.
+        window.dispatchEvent(new StorageEvent('storage', { key: 'language' }));
       }
     } catch (e) {
       if (process.env.NODE_ENV === 'development') {
         console.error('[LanguageContext] Failed to persist language:', e);
       }
     }
-    setLanguageState(lang);
-  };
+  }, []);
 
   const translation = TRANSLATIONS[language] ?? TRANSLATIONS.en;
-
-  // Serve SSR / first render with the default english content to avoid
-  // hydration mismatches between server and client.
-  if (!mounted) {
-    return (
-      <LanguageContext.Provider
-        value={{
-          language: 'en',
-          setLanguage: () => {},
-          t: TRANSLATIONS.en,
-          mounted: false,
-        }}
-      >
-        {children}
-      </LanguageContext.Provider>
-    );
-  }
 
   const value: LanguageContextType = {
     language,
     setLanguage,
     t: translation,
-    mounted: true,
+    mounted,
   };
 
   return (

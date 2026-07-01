@@ -1,4 +1,4 @@
-// app/layout.tsx v0.0.7
+// app/layout.tsx v0.0.8
 import './style.css';
 import type { Metadata, Viewport } from 'next';
 import { Inter, Geist } from 'next/font/google';
@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'MuseTheory AI v0.0.7',
+  title: 'MuseTheory AI v0.0.8',
   description:
     'An intelligent music theory companion that visualizes scales and chords, provides an AI tutor, and generates artistic musical imagery.',
   manifest: '/manifest.json',

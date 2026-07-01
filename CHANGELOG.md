@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.0.8] - 2026-06-24
+
+### Added
+- 新增 ESLint 9 flat config (eslint.config.mjs)，替换已废弃的 .eslintrc.json
+- 新增 eslint 与 eslint-config-next 开发依赖，恢复 `npm run lint` 脚本
+
+### Changed
+- 重构 LanguageContext，使用 `useSyncExternalStore` 替代 useEffect+setState，安全处理 SSR hydration
+- 重构 ChatBot 消息初始化，使用 useState 惰性初始化从 localStorage 读取，避免 effect 内同步 setState
+- 重构 Footer 和 Navigation，复用 LanguageContext 的 mounted 状态，移除冗余的本地 mount effect
+- 重构 useWebMIDI，将 MIDI 支持检测提取为模块级函数并用于 useState 初始化
+- 重构 ImageGenerator，将 getAIStudio 提取到组件外部，使用 useCallback 稳定 checkKeyStatus 引用
+- 更新 package.json lint 脚本从 `next lint` 改为 `eslint app`（适配 Next.js 16）
+- 统一所有文件版本号至 v0.0.8（package.json、metadata.json、constants.ts、layout.tsx、README.md 等）
+
+### Fixed
+- 修复 React 19 set-state-in-effect lint 错误（Footer、Navigation、ChatBot、ImageGenerator、useWebMIDI）
+- 修复 ImageGenerator 中变量在声明前被访问的问题
+- 修复 ImageGenerator 中未转义引号的 JSX 语法问题
+- 修复 README.md 引用不存在的 README_EN.md 文件的问题
+- 修复 .gitignore 缺少 *.tsbuildinfo 忽略规则的问题
+
 ## [v0.0.7] - 2026-06-08
 
 ### Added

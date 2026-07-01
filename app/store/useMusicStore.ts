@@ -1,4 +1,4 @@
-// app/store/useMusicStore.ts v0.0.7
+// app/store/useMusicStore.ts v0.0.8
 import { create } from 'zustand';
 import { InstrumentType } from '../services/audioService';
 

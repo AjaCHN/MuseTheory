@@ -1,4 +1,4 @@
-// app/hooks/useWebMIDI.ts v0.0.7
+// app/hooks/useWebMIDI.ts v0.0.8
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { audioService } from '../services/audioService';
 import { useMusicStore } from '../store/useMusicStore';
@@ -8,10 +8,19 @@ interface UseWebMIDIResult {
   error: string | null;
 }
 
+const MIDI_NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+const isMIDISupported = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  return 'requestMIDIAccess' in navigator;
+};
+
 export const useWebMIDI = (): UseWebMIDIResult => {
   const { instrument } = useMusicStore();
   const [midiAccess, setMidiAccess] = useState<MIDIAccess | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(() =>
+    isMIDISupported() ? null : 'Web MIDI API not supported in this browser.'
+  );
   const accessRef = useRef<MIDIAccess | null>(null);
 
   // Keep the latest instrument in a ref so note playback always uses the
@@ -22,9 +31,8 @@ export const useWebMIDI = (): UseWebMIDIResult => {
   }, [instrument]);
 
   const playNoteFromMIDI = useCallback((midiNote: number) => {
-    const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     const octave = Math.floor(midiNote / 12) - 1;
-    const noteName = notes[midiNote % 12];
+    const noteName = MIDI_NOTE_NAMES[midiNote % 12];
     const fullNote = `${noteName}${octave}`;
     audioService.playNotes([fullNote], instrumentRef.current, '8n').catch((err) => {
       if (process.env.NODE_ENV === 'development') {
@@ -56,8 +64,7 @@ export const useWebMIDI = (): UseWebMIDIResult => {
   }, [playNoteFromMIDI]);
 
   useEffect(() => {
-    if (typeof navigator === 'undefined' || !('requestMIDIAccess' in navigator)) {
-      setError('Web MIDI API not supported in this browser.');
+    if (!isMIDISupported()) {
       return;
     }
 

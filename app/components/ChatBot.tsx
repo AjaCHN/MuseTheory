@@ -1,7 +1,7 @@
-// app/components/ChatBot.tsx v0.0.7 - Apple Style
+// app/components/ChatBot.tsx v0.0.8 - Apple Style
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { sendMessageToTutorStream } from '../services/geminiService';
 import { ChatMessage } from '../types';
 import { Bot, Trash2 } from 'lucide-react';
@@ -72,45 +72,57 @@ const safeRemoveStorage = (key: string): void => {
   }
 };
 
+// Lazily read the initial messages from localStorage on the client only.
+// Returning null on the server keeps the initial render consistent and
+// avoids hydration mismatches; the welcome message is added afterwards.
+const readInitialMessages = (): ChatMessage[] | null => {
+  if (typeof window === 'undefined') return null;
+  const saved = safeReadStorage(CHAT_STORAGE_KEY);
+  if (!saved) return null;
+  try {
+    const parsed = JSON.parse(saved);
+    const valid = validateMessages(parsed);
+    if (valid.length > 0) return valid;
+    safeRemoveStorage(CHAT_STORAGE_KEY);
+  } catch (e) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[ChatBot] Failed to parse chat history:', e);
+    }
+    safeRemoveStorage(CHAT_STORAGE_KEY);
+  }
+  return null;
+};
+
 const ChatBot: React.FC = () => {
   const { t } = useLanguage();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    // Lazy initializer runs once on the client; returns [] during SSR.
+    const stored = readInitialMessages();
+    if (stored && stored.length > 0) return stored;
+    return [];
+  });
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const initialHydratedRef = useRef(false);
+  const welcomedRef = useRef(false);
 
-  // Hydrate from localStorage once.  SSR is handled by the empty initial state.
+  // Ensure a welcome message exists when there are no stored messages.
+  // Runs only on the client after hydration to avoid SSR mismatch.
   useEffect(() => {
-    if (initialHydratedRef.current) return;
-    initialHydratedRef.current = true;
-
-    const saved = safeReadStorage(CHAT_STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        const valid = validateMessages(parsed);
-        if (valid.length > 0) {
-          setMessages(valid);
-          return;
-        }
-        // invalid payload - discard to avoid repeated failures.
-        safeRemoveStorage(CHAT_STORAGE_KEY);
-      } catch (e) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[ChatBot] Failed to parse chat history:', e);
-        }
-        safeRemoveStorage(CHAT_STORAGE_KEY);
-      }
-    }
-    setMessages([
-      {
-        id: 'welcome',
-        role: 'model',
-        text: t.chat.welcome,
-        timestamp: Date.now(),
-      },
-    ]);
+    if (welcomedRef.current) return;
+    welcomedRef.current = true;
+    setMessages((prev) =>
+      prev.length > 0
+        ? prev
+        : [
+            {
+              id: 'welcome',
+              role: 'model',
+              text: t.chat.welcome,
+              timestamp: Date.now(),
+            },
+          ]
+    );
   }, [t.chat.welcome]);
 
   // Persist the latest messages; cap size to prevent runaway storage.
@@ -127,7 +139,7 @@ const ChatBot: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = async (e: React.FormEvent) => {
+  const handleSend = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = input.trim();
     if (!trimmed || isSending) return;
@@ -186,20 +198,19 @@ const ChatBot: React.FC = () => {
     } finally {
       setIsSending(false);
     }
-  };
+  }, [input, isSending]);
 
-  const handleClear = () => {
-    const defaultMsg: ChatMessage[] = [
+  const handleClear = useCallback(() => {
+    setMessages([
       {
         id: 'welcome',
         role: 'model',
         text: t.chat.welcome,
         timestamp: Date.now(),
       },
-    ];
-    setMessages(defaultMsg);
+    ]);
     safeRemoveStorage(CHAT_STORAGE_KEY);
-  };
+  }, [t.chat.welcome]);
 
   return (
     <div className="chat-container">

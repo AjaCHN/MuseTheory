@@ -1,4 +1,4 @@
-// app/components/Piano.tsx v0.0.7
+// app/components/Piano.tsx v0.0.8
 'use client';
 
 import React, { useState } from 'react';

@@ -1,4 +1,4 @@
-// app/services/audioService.ts v0.0.7
+// app/services/audioService.ts v0.0.8
 import * as Tone from 'tone';
 
 export type InstrumentType = 'piano' | 'guitar' | 'violin';
