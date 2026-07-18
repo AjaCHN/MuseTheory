@@ -1,4 +1,4 @@
-// app/components/MusicVisualizer.tsx v0.0.7 - Apple Style
+// app/components/MusicVisualizer.tsx v0.0.9 - Minimal Editorial
 'use client';
 
 import React, { useState } from 'react';
@@ -12,6 +12,9 @@ import VisualizerInfo from './VisualizerInfo';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useMusicStore } from '../store/useMusicStore';
 import { useWebMIDI } from '../hooks/useWebMIDI';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const MusicVisualizer: React.FC = () => {
   const { t, language } = useLanguage();
@@ -76,20 +79,20 @@ const MusicVisualizer: React.FC = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-12">
-      {/* Apple-style Hero Section */}
+    <div className="max-w-4xl mx-auto space-y-8 sm:space-y-12">
+      {/* Hero Section - Editorial Style */}
       {!data && !loading && (
-        <div className="text-center space-y-8 py-16">
-          <h2 className="text-6xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <div className="text-center space-y-6 py-12 sm:py-20 animate-fade-up">
+          <h1 className="display text-5xl sm:text-6xl md:text-7xl text-foreground">
             {t.visualizer.title}
-          </h2>
-          <p className="text-2xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto body-serif">
             {t.visualizer.subtitle}
           </p>
         </div>
       )}
 
-      {/* Search Section - Apple Style */}
+      {/* Search Section */}
       <VisualizerSearch 
         query={query} 
         setQuery={setQuery} 
@@ -98,28 +101,40 @@ const MusicVisualizer: React.FC = () => {
         onLucky={handleLucky} 
       />
 
-      {/* Error Messages - Apple Style */}
-      {error && (
-        <div className="p-6 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-3xl text-center border border-red-100 dark:border-red-800">
-          {error}
+      {/* Loading State */}
+      {loading && (
+        <div className="space-y-6 animate-fade-in">
+          <Skeleton className="h-48 w-full rounded-lg" />
+          <Skeleton className="h-48 w-full rounded-lg" />
+          <Skeleton className="h-64 w-full rounded-lg" />
         </div>
+      )}
+
+      {/* Error Messages */}
+      {error && (
+        <Alert variant="destructive" className="animate-fade-in">
+          <AlertCircle className="w-4 h-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       {midiError && (
-        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-2xl text-sm text-center border border-amber-100 dark:border-amber-800">
-          {midiError}
-        </div>
+        <Alert className="animate-fade-in">
+          <AlertCircle className="w-4 h-4" />
+          <AlertDescription>{midiError}</AlertDescription>
+        </Alert>
       )}
 
       {midiAccess && (
-        <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 rounded-2xl text-sm text-center border border-emerald-100 dark:border-emerald-800">
-          MIDI Keyboard Connected
-        </div>
+        <Alert className="animate-fade-in">
+          <CheckCircle2 className="w-4 h-4 text-primary" />
+          <AlertDescription>MIDI Keyboard Connected</AlertDescription>
+        </Alert>
       )}
 
-      {/* Results Section - Apple Style Cards */}
-      {data && (
-        <div className="space-y-8 animate-fade-in">
+      {/* Results Section */}
+      {data && !loading && (
+        <div className="space-y-6 sm:space-y-8">
           <VisualizerInfo 
             data={data} 
             instrument={instrument} 
@@ -130,17 +145,9 @@ const MusicVisualizer: React.FC = () => {
             onPlayNotes={handlePlayNotes} 
           />
 
-          {/* Sheet Music Card */}
-          <div className="bg-white dark:bg-slate-800/80 backdrop-blur-sm p-8 rounded-3xl shadow-sm border border-slate-100/50 dark:border-slate-700/50 transition-all duration-300 hover:shadow-md hover:translate-y-[-2px]">
-            <h3 className="text-sm font-semibold text-slate-400 dark:text-slate-500 mb-4 uppercase tracking-wider">Sheet Music</h3>
-            <SheetMusic notes={data.notes} title={data.name} />
-          </div>
+          <SheetMusic notes={data.notes} title={data.name} />
 
-          {/* Piano Card */}
-          <div className="bg-gradient-to-b from-slate-900 to-black p-8 sm:p-12 rounded-3xl shadow-lg flex flex-col items-center">
-            <h3 className="text-sm font-semibold text-slate-400 mb-6 uppercase tracking-wider">Piano</h3>
-            <Piano highlightedNotes={data.notes} />
-          </div>
+          <Piano highlightedNotes={data.notes} />
         </div>
       )}
     </div>

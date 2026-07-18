@@ -1,8 +1,14 @@
-// app/components/SheetMusic.tsx v0.0.7
+// app/components/SheetMusic.tsx v0.0.9 - Minimal Editorial
 'use client';
 
 import React, { useEffect, useRef } from 'react';
 import abcjs from 'abcjs';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 interface SheetMusicProps {
   notes: string[];
@@ -15,13 +21,8 @@ const SheetMusic: React.FC<SheetMusicProps> = ({ notes, title }) => {
   useEffect(() => {
     if (!containerRef.current || notes.length === 0) return;
 
-    // Convert standard notes (C, C#, D) to ABC notation
     const abcNotes = notes.map(n => {
       let note = n.replace('#', '^').replace('b', '_');
-      // Basic mapping to middle octave for simplicity
-      if (note.length === 1 || note.includes('^') || note.includes('_')) {
-        return note;
-      }
       return note;
     }).join(' ');
 
@@ -40,7 +41,18 @@ ${abcNotes} |]
     });
   }, [notes, title]);
 
-  return <div ref={containerRef} className="w-full overflow-x-auto bg-white dark:bg-slate-800 rounded-xl p-4" />;
+  return (
+    <Card className="animate-fade-up stagger-3 border-border/60">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+          Sheet Music
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div ref={containerRef} className="w-full overflow-x-auto bg-card" />
+      </CardContent>
+    </Card>
+  );
 };
 
 export default SheetMusic;

@@ -1,4 +1,4 @@
-// app/components/VisualizerInfo.tsx v0.0.7 - Apple Style
+// app/components/VisualizerInfo.tsx v0.0.9 - Minimal Editorial
 'use client';
 
 import React from 'react';
@@ -6,6 +6,24 @@ import { Settings2, Mic, Square, Download, Play } from 'lucide-react';
 import { NoteData } from '../types';
 import { InstrumentType } from '../services/audioService';
 import { useLanguage } from '../contexts/LanguageContext';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 interface VisualizerInfoProps {
   data: NoteData;
@@ -29,67 +47,76 @@ const VisualizerInfo: React.FC<VisualizerInfoProps> = ({
   const { t } = useLanguage();
 
   return (
-    <div className="info-card">
-      <h3 className="info-card-title">{data.name}</h3>
-      <p className="text-slate-600 dark:text-slate-300 mb-6 text-lg">{data.description}</p>
-      
-      <div className="info-notes">
-        {data.notes.map((note, i) => (
-          <span key={i} className="info-note">{note}</span>
-        ))}
-      </div>
-      
-      <div className="text-slate-500 dark:text-slate-400 mb-6">
-        <span className="font-semibold">{t.visualizer.intervals}:</span> {data.intervals.join(' - ')}
-      </div>
-      
-      <div className="flex items-center gap-2 mb-6 flex-wrap">
-        <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-xl">
-          <Settings2 className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-          <select 
-            value={instrument} 
-            onChange={(e) => setInstrument(e.target.value as InstrumentType)}
-            className="bg-transparent text-sm font-medium text-slate-700 dark:text-slate-300 outline-none cursor-pointer"
-          >
-            <option value="piano">Piano</option>
-            <option value="guitar">Guitar</option>
-            <option value="violin">Violin</option>
-          </select>
+    <Card className="animate-fade-up stagger-2 border-border/60">
+      <CardHeader className="pb-4">
+        <CardTitle className="heading-serif text-2xl sm:text-3xl font-medium tracking-tight">
+          {data.name}
+        </CardTitle>
+        <CardDescription className="text-base mt-2">
+          {data.description}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="flex flex-wrap gap-2">
+          {data.notes.map((note, i) => (
+            <Badge key={i} variant="secondary" className="text-sm px-3 py-1 font-mono">
+              {note}
+            </Badge>
+          ))}
         </div>
-      </div>
 
-      <div className="info-actions">
-        <button
-          onClick={onPlayNotes}
-          className="info-btn primary"
-          title="Play Notes"
-        >
-          <Play className="w-5 h-5" />
+        <Separator />
+
+        <div className="space-y-2">
+          <p className="text-sm text-muted-foreground">{t.visualizer.intervals}</p>
+          <p className="font-mono text-sm">{data.intervals.join(' - ')}</p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Settings2 className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+          <Select value={instrument} onValueChange={(v) => setInstrument(v as InstrumentType)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="piano">Piano</SelectItem>
+              <SelectItem value="guitar">Guitar</SelectItem>
+              <SelectItem value="violin">Violin</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </CardContent>
+      <CardFooter className="flex flex-wrap gap-2 pt-2">
+        <Button onClick={onPlayNotes} className="rounded-lg">
+          <Play data-icon="inline-start" />
           Play
-        </button>
+        </Button>
         
-        <button
+        <Button
+          variant={isRecording ? "destructive" : "outline"}
           onClick={onRecordToggle}
-          className={`info-btn ${isRecording ? 'warning' : 'success'}`}
-          title={isRecording ? "Stop Recording" : "Start Recording"}
+          className="rounded-lg"
         >
-          {isRecording ? <Square className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          {isRecording ? (
+            <Square data-icon="inline-start" />
+          ) : (
+            <Mic data-icon="inline-start" />
+          )}
           {isRecording ? "Stop" : "Record"}
-        </button>
+        </Button>
 
         {recordingUrl && (
           <a
             href={recordingUrl}
             download="musetheory-recording.webm"
-            className="info-btn warning"
-            title="Download Recording"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-2.5 h-8 text-sm font-medium hover:bg-muted hover:text-foreground transition-all"
           >
-            <Download className="w-5 h-5" />
+            <Download className="w-4 h-4" strokeWidth={1.5} />
             Download
           </a>
         )}
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 

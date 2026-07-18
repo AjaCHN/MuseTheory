@@ -1,14 +1,26 @@
-// app/components/ImageGenerator.tsx v0.0.8 - Apple Style
+// app/components/ImageGenerator.tsx v0.0.9 - Minimal Editorial
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { generateMusicImage } from '../services/geminiService';
 import { ImageSize, GeneratedImage } from '../types';
-import { Loader2, Image as ImageIcon, Download } from 'lucide-react';
+import { Loader2, Image as ImageIcon, Download, Sparkles } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import AIStudioKeySelector from './AIStudioKeySelector';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface AIStudioClient {
   hasSelectedApiKey: () => Promise<boolean>;
@@ -93,83 +105,105 @@ const ImageGenerator: React.FC = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-12">
-      {/* Apple-style Hero Section */}
+    <div className="max-w-3xl mx-auto space-y-8 sm:space-y-12">
+      {/* Hero Section - Editorial Style */}
       {!generatedImage && !loading && (
-        <div className="text-center space-y-8 py-16 animate-fade-in">
-          <h2 className="text-6xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <div className="text-center space-y-6 py-12 sm:py-20 animate-fade-up">
+          <h1 className="display text-5xl sm:text-6xl md:text-7xl text-foreground">
             {t.art.title}
-          </h2>
-          <p className="text-2xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto body-serif">
             {t.art.subtitle}
           </p>
         </div>
       )}
 
-      {/* Form Card - Apple Style */}
-      <div className="info-card animate-fade-in">
-        <form onSubmit={handleGenerate} className="space-y-8">
-          <div className="space-y-4">
-            <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.art.promptLabel}</label>
-            <textarea
+      {/* Form Card */}
+      <Card className="animate-fade-up stagger-1 border-border/60">
+        <CardHeader>
+          <CardTitle className="heading-serif text-2xl font-medium">{t.art.promptLabel}</CardTitle>
+          <CardDescription>{t.art.promptPlaceholder}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleGenerate} className="space-y-6">
+            <Textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder={t.art.promptPlaceholder}
-              className="w-full p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-600/30 bg-slate-100 dark:bg-slate-700/50 text-slate-900 dark:text-slate-100 text-lg focus:border-[#0071e3] focus:shadow-[0_0_0_4px_rgba(0,113,227,0.15)] focus:bg-white dark:focus:bg-slate-800/80 outline-none h-32 resize-none transition-all duration-300"
+              className="min-h-32 resize-none rounded-lg text-base"
             />
-          </div>
 
-          <div className="space-y-4">
-            <label className="block text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.art.sizeLabel}</label>
-            <div className="flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-700/50 rounded-2xl">
-              {(['1K', '2K', '4K'] as ImageSize[]).map((s) => (
-                <Button
-                  key={s}
-                  type="button"
-                  variant={size === s ? "default" : "ghost"}
-                  onClick={() => setSize(s)}
-                  className="flex-1 py-3.5 px-4 rounded-xl font-semibold text-base transition-all duration-300"
-                >
-                  {s}
-                </Button>
-              ))}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-muted-foreground">{t.art.sizeLabel}</label>
+              <Tabs value={size} onValueChange={(v) => setSize(v as ImageSize)} className="w-full">
+                <TabsList className="w-full grid grid-cols-3">
+                  {(['1K', '2K', '4K'] as ImageSize[]).map((s) => (
+                    <TabsTrigger key={s} value={s} className="rounded-lg">
+                      {s}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
             </div>
-          </div>
 
-          <Button
-            type="submit"
-            disabled={loading || !prompt.trim()}
-            className="info-btn primary w-full py-5 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImageIcon className="w-5 h-5" />}
-            {t.art.generate}
-          </Button>
-        </form>
-      </div>
+            <Button
+              type="submit"
+              disabled={loading || !prompt.trim()}
+              className="w-full h-12 rounded-lg font-medium"
+            >
+              {loading ? (
+                <Loader2 className="animate-spin" data-icon="inline-start" />
+              ) : (
+                <Sparkles data-icon="inline-start" />
+              )}
+              {t.art.generate}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-      {/* Error Messages - Apple Style */}
-      {error && (
-        <div className="p-6 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-3xl text-center border border-red-100 dark:border-red-800 animate-fade-in">
-          {error}
-        </div>
+      {/* Loading State */}
+      {loading && (
+        <Card className="animate-fade-in border-border/60">
+          <CardContent className="pt-6">
+            <Skeleton className="aspect-square w-full rounded-lg" />
+          </CardContent>
+        </Card>
       )}
 
-      {/* Result Card - Apple Style */}
-      {generatedImage && (
-        <div className="info-card animate-fade-in relative group">
-          <div className="aspect-square w-full relative rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-900/50">
-            <img src={generatedImage.url} alt={generatedImage.prompt} className="w-full h-full object-contain" />
-            <Button
-              onClick={handleDownload}
-              className="info-btn absolute top-6 right-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm text-slate-800 dark:text-slate-100 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
-              title={t.art.download}
-            >
-              <Download className="w-5 h-5" />
-              <span className="font-semibold">{t.art.download}</span>
-            </Button>
-          </div>
-          <p className="mt-6 text-center text-slate-500 dark:text-slate-400 text-base italic">"{generatedImage.prompt}"</p>
-        </div>
+      {/* Error Messages */}
+      {error && (
+        <Alert variant="destructive" className="animate-fade-in">
+          <AlertCircle className="w-4 h-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Result Card */}
+      {generatedImage && !loading && (
+        <Card className="animate-fade-up stagger-2 border-border/60">
+          <CardContent className="pt-6">
+            <div className="aspect-square w-full relative rounded-lg overflow-hidden bg-muted group">
+              <img 
+                src={generatedImage.url} 
+                alt={generatedImage.prompt} 
+                className="w-full h-full object-contain"
+              />
+              <Button
+                onClick={handleDownload}
+                variant="secondary"
+                className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg"
+                title={t.art.download}
+              >
+                <Download data-icon="inline-start" />
+                {t.art.download}
+              </Button>
+            </div>
+            <p className="mt-4 text-center text-muted-foreground text-sm italic body-serif">
+              "{generatedImage.prompt}"
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

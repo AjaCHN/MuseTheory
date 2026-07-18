@@ -1,4 +1,4 @@
-// app/components/ChatBot.tsx v0.0.7 - Apple Style
+// app/components/ChatBot.tsx v0.0.9 - Minimal Editorial
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -8,6 +8,14 @@ import { Bot, Trash2 } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import ChatMessageList from './ChatMessageList';
 import ChatInput from './ChatInput';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 const CHAT_STORAGE_KEY = 'chatHistory';
 const MAX_STORED_MESSAGES = 200;
@@ -52,7 +60,7 @@ const safeWriteStorage = (key: string, value: string): void => {
   if (typeof window === 'undefined') return;
   try {
     if (!('localStorage' in window)) return;
-    window.localStorage.setItem(key, value);
+ window.localStorage.setItem(key, value);
   } catch (e) {
     if (process.env.NODE_ENV === 'development') {
       console.error('[ChatBot] Failed to write to localStorage:', e);
@@ -80,7 +88,6 @@ const ChatBot: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const initialHydratedRef = useRef(false);
 
-  // Hydrate from localStorage once.  SSR is handled by the empty initial state.
   useEffect(() => {
     if (initialHydratedRef.current) return;
     initialHydratedRef.current = true;
@@ -94,7 +101,6 @@ const ChatBot: React.FC = () => {
           setMessages(valid);
           return;
         }
-        // invalid payload - discard to avoid repeated failures.
         safeRemoveStorage(CHAT_STORAGE_KEY);
       } catch (e) {
         if (process.env.NODE_ENV === 'development') {
@@ -113,7 +119,6 @@ const ChatBot: React.FC = () => {
     ]);
   }, [t.chat.welcome]);
 
-  // Persist the latest messages; cap size to prevent runaway storage.
   useEffect(() => {
     if (messages.length === 0) {
       safeRemoveStorage(CHAT_STORAGE_KEY);
@@ -202,31 +207,30 @@ const ChatBot: React.FC = () => {
   };
 
   return (
-    <div className="chat-container">
-      {/* Header - Apple Style */}
-      <div className="chat-header">
-        <h2 className="chat-title">
-          <div className="p-2 bg-gradient-to-br from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 rounded-xl">
-            <Bot className="w-5 h-5 text-white dark:text-slate-900" />
-          </div>
+    <Card className="max-w-4xl mx-auto flex flex-col h-[calc(100vh-12rem)] min-h-[500px] animate-fade-up border-border/60 mt-4 sm:mt-6">
+      <CardHeader className="pb-3 flex flex-row items-center justify-between">
+        <CardTitle className="heading-serif text-xl sm:text-2xl font-medium flex items-center gap-3">
+          <Bot className="w-5 h-5" strokeWidth={1.5} />
           {t.chat.title}
-        </h2>
-        <button
+        </CardTitle>
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={handleClear}
-          className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-xl transition-all duration-200 flex items-center gap-2 text-sm"
+          className="text-muted-foreground hover:text-destructive rounded-lg"
           title={t.chat.clear}
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4" data-icon="inline-start" />
           <span className="hidden sm:inline">{t.chat.clear}</span>
-        </button>
-      </div>
-
-      {/* Messages - Apple Style */}
-      <ChatMessageList messages={messages} isSending={isSending} messagesEndRef={messagesEndRef} />
-
-      {/* Input - Apple Style */}
-      <ChatInput input={input} setInput={setInput} isSending={isSending} onSend={handleSend} />
-    </div>
+        </Button>
+      </CardHeader>
+      <CardContent className="flex-1 overflow-hidden p-0">
+        <ChatMessageList messages={messages} isSending={isSending} messagesEndRef={messagesEndRef} />
+      </CardContent>
+      <CardFooter className="pt-3">
+        <ChatInput input={input} setInput={setInput} isSending={isSending} onSend={handleSend} />
+      </CardFooter>
+    </Card>
   );
 };
 

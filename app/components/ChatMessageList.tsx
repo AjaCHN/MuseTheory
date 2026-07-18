@@ -1,4 +1,4 @@
-// app/components/ChatMessageList.tsx v0.0.7 - Apple Style
+// app/components/ChatMessageList.tsx v0.0.9 - Minimal Editorial
 'use client';
 
 import React, { useMemo } from 'react';
@@ -6,6 +6,8 @@ import { User, Bot, Loader2 } from 'lucide-react';
 import Markdown from 'react-markdown';
 import { ChatMessage } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 interface ChatMessageListProps {
   messages: ChatMessage[];
@@ -15,19 +17,12 @@ interface ChatMessageListProps {
 
 const MAX_MESSAGE_LENGTH = 200_000;
 
-// Very conservative allowlist of HTML/Markdown constructs we permit.
-// Any `<script`, `javascript:`, `onX=`, and suspicious protocol links are
-// stripped before rendering.  react-markdown itself also escapes raw HTML
-// by default (disallowedElements defaults to prevent raw HTML injection).
 const sanitizeText = (input: string): string => {
   if (typeof input !== 'string') return '';
   let safe = input;
-  // cap length to prevent runaway rendering on malicious payloads.
   if (safe.length > MAX_MESSAGE_LENGTH) {
     safe = safe.slice(0, MAX_MESSAGE_LENGTH);
   }
-  // Remove inline event handlers and data-* attributes, and strip
-  // javascript:/vbscript: protocol links that could be injected.
   safe = safe.replace(/\bon[a-z]+\s*=\s*"[^"]*"/gi, '');
   safe = safe.replace(/\bon[a-z]+\s*=\s*'[^']*'/gi, '');
   safe = safe.replace(/\bon[a-z]+\s*=\s*[^\s>]+/gi, '');
@@ -42,8 +37,6 @@ const sanitizeText = (input: string): string => {
   return safe;
 };
 
-// Disallow elements that could be leveraged for phishing or script injection
-// (react-markdown still escapes raw HTML on its own; this is defence-in-depth).
 const DISALLOWED_ELEMENTS = new Set([
   'script',
   'style',
@@ -76,64 +69,68 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
   );
 
   return (
-    <div className="chat-messages">
-      {safeMessages.map((msg) => (
-        <div
-          key={msg.id}
-          className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-        >
+    <ScrollArea className="h-full px-4 sm:px-6">
+      <div className="py-4 space-y-4">
+        {safeMessages.map((msg, index) => (
           <div
-            className={`
-            flex max-w-[80%] gap-3 
-            ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}
-          `}
+            key={msg.id}
+            className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-up`}
+            style={{ animationDelay: `${index * 0.02}s` }}
           >
             <div
-              className={`
-              flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center
-              ${msg.role === 'user' ? 'bg-gradient-to-br from-slate-900 to-slate-700' : 'bg-gradient-to-br from-slate-500 to-slate-700'}
-              text-white
-            `}
+              className={`flex max-w-[85%] sm:max-w-[75%] gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
             >
-              {msg.role === 'user' ? <User size={18} /> : <Bot size={18} />}
-            </div>
-            <div className={`chat-bubble ${msg.role === 'user' ? 'user' : 'ai'}`}>
-              {msg.role === 'user' ? (
-                msg.text
-              ) : (
-                <div className="markdown-body prose prose-sm max-w-none dark:prose-invert">
-                  <Markdown
-                    disallowedElements={Array.from(DISALLOWED_ELEMENTS)}
-                    unwrapDisallowed
-                    allowElement={(element) =>
-                      typeof element.tagName === 'string'
-                        ? !DISALLOWED_ELEMENTS.has(element.tagName.toLowerCase())
-                        : true
-                    }
-                  >
-                    {msg.text}
-                  </Markdown>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      ))}
-      {isSending && (
-        <div className="flex justify-start">
-          <div className="flex max-w-[80%] gap-3 flex-row">
-            <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-gradient-to-br from-slate-500 to-slate-700 text-white flex items-center justify-center">
-              <Bot size={18} />
-            </div>
-            <div className="chat-bubble ai flex items-center gap-2">
-              <Loader2 className="w-4 h-4 animate-spin text-slate-500" />
-              <span className="text-sm text-slate-500">{t.chat.thinking}</span>
+              <Avatar className="h-8 w-8 shrink-0">
+                <AvatarFallback className="text-xs">
+                  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                </AvatarFallback>
+              </Avatar>
+              <div
+                className={`rounded-lg px-4 py-3 text-sm ${
+                  msg.role === 'user'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-foreground'
+                }`}
+              >
+                {msg.role === 'user' ? (
+                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                ) : (
+                  <div className="prose prose-sm max-w-none dark:prose-invert">
+                    <Markdown
+                      disallowedElements={Array.from(DISALLOWED_ELEMENTS)}
+                      unwrapDisallowed
+                      allowElement={(element) =>
+                        typeof element.tagName === 'string'
+                          ? !DISALLOWED_ELEMENTS.has(element.tagName.toLowerCase())
+                          : true
+                      }
+                    >
+                      {msg.text}
+                    </Markdown>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      <div ref={messagesEndRef} />
-    </div>
+        ))}
+        {isSending && (
+          <div className="flex w-full justify-start animate-fade-in">
+            <div className="flex max-w-[85%] sm:max-w-[75%] gap-3 flex-row">
+              <Avatar className="h-8 w-8 shrink-0">
+                <AvatarFallback className="text-xs">
+                  <Bot className="w-4 h-4" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="rounded-lg px-4 py-3 text-sm bg-muted text-foreground flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                <span className="text-muted-foreground">{t.chat.thinking}</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+    </ScrollArea>
   );
 };
 

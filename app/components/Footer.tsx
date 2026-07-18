@@ -1,8 +1,9 @@
-// app/components/Footer.tsx v0.0.7
+// app/components/Footer.tsx v0.0.9 - Minimal Editorial
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { Music } from 'lucide-react';
 
 export default function Footer() {
   const { t } = useLanguage();
@@ -13,9 +14,17 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-auto transition-colors duration-300">
-      <div className="max-w-6xl mx-auto px-4 py-6 text-center text-slate-400 dark:text-slate-500 text-sm">
-        <p>© {mounted ? new Date().getFullYear() : '2026'} {t.footer}</p>
+    <footer className="mt-auto border-t border-border/60">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 lg:px-8 py-8 sm:py-10">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Music className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <span className="heading-serif text-base text-foreground">MuseTheory AI</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            © {mounted ? new Date().getFullYear() : '2026'} {t.footer}
+          </p>
+        </div>
       </div>
     </footer>
   );

@@ -1,7 +1,7 @@
-// app/layout.tsx v0.0.7
+// app/layout.tsx v0.0.9
 import './style.css';
 import type { Metadata, Viewport } from 'next';
-import { Inter, Geist } from 'next/font/google';
+import { Geist, Playfair_Display, JetBrains_Mono } from 'next/font/google';
 import Providers from './components/Providers';
 import { ThemeProvider } from './components/ThemeProvider';
 import Navigation from './components/Navigation';
@@ -13,19 +13,34 @@ import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({
+  subsets: ['latin'],
+  variable: '--font-geist',
+});
 
-const inter = Inter({ subsets: ['latin'] });
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+  weight: ['400', '500', '600', '700'],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+});
 
 export const viewport: Viewport = {
-  themeColor: '#0071e3',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+  ],
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
 };
 
 export const metadata: Metadata = {
-  title: 'MuseTheory AI v0.0.7',
+  title: 'MuseTheory AI',
   description:
     'An intelligent music theory companion that visualizes scales and chords, provides an AI tutor, and generates artistic musical imagery.',
   manifest: '/manifest.json',
@@ -63,9 +78,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn(geist.variable, playfair.variable, jetbrainsMono.variable)}>
       <body
-        className={`${inter.className} bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 min-h-screen flex flex-col transition-colors duration-300`}
+        className="min-h-screen flex flex-col bg-background text-foreground font-sans antialiased"
         suppressHydrationWarning
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.0.8] - 2026-06-09
+
+### Added
+- 全新极简编辑风格设计系统：基于 oklch 颜色模型，衬线字体 Playfair Display + 无衬线字体 Geist + 等宽字体 JetBrains Mono
+- shadcn/ui 组件库集成：Card、Button、Input、Textarea、Tabs、TabsList、TabsTrigger、TabsContent、DropdownMenu、ScrollArea、Skeleton、Badge
+- 设计系统规范：色彩系统、字体层级、间距系统、动画系统（fade-up、slide-in、fade-in、pulse-glow）
+- 组件样式类：.card-hover、.glass、.heading-serif、.display、.stagger-* 等
+- 可访问性优化：aria-label、sr-only 标签、color-scheme 深色模式支持、prefers-reduced-motion 媒体查询
+- 安全修复：移除 API 密钥客户端暴露、用户消息 XSS 防护、错误信息生产环境隐藏
+- 设计审查：符合 Web Interface Guidelines 标准
+
+### Changed
+- 重构所有页面组件，全面使用 shadcn/ui 替代自定义 UI 组件
+- 重构 Navigation 组件：玻璃态效果、衬线字体 Logo、滚动时背景变化
+- 重构 MusicVisualizer 组件：极简编辑风格、骨架屏加载、优雅动画
+- 重构 ChatBot 组件：Card 布局、ScrollArea 消息列表、优化消息气泡
+- 重构 ImageGenerator 组件：Tabs 尺寸选择器、优化生成结果展示
+- 重构 style.css：基于 oklch 颜色模型、CSS 变量系统、Tailwind CSS 4.0 配置
+- 更新 layout.tsx：正确配置字体变量（Geist、Playfair Display、JetBrains Mono）
+- 优化响应式布局，确保桌面端和移动端完美呈现
+
+### Fixed
+- 修复 layout.tsx 中未定义的 inter 字体变量问题
+- 修复 Button 组件不支持 asChild 属性的问题
+- 修复 DropdownMenuTrigger 不支持 asChild 属性的问题
+- 修复 API 密钥通过 next.config.mjs 暴露到客户端的安全问题
+- 修复聊天消息用户输入 XSS 安全漏洞
+
+### Removed
+- 删除 prototype 目录下的冗余原型文件（README.md、SPEC.md、prototype.html）
+
 ## [v0.0.7] - 2026-06-08
 
 ### Added
